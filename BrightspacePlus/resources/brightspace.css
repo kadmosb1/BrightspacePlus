@@ -1,0 +1,212 @@
+body {
+    font-family: Verdana;
+    font-size: 12pt;
+}
+
+body, p, li {
+    color: #494c4e; 
+}
+
+h2 {
+    color: #9ea700;
+    font-size: 24px;
+    padding-top: 16px;
+    border-top: #494c4e 3px solid;
+}
+
+h3 {
+    color: #9ea700;
+    font-size: 18px;    
+    padding: 16px 0px;
+    border-bottom: #494c4e 1px solid;
+    border-top: #494c4e 3px solid;
+}
+
+p {
+    color: #000000; 
+}
+
+footer {
+    margin: 20px 0px 60px 0px;
+    padding: 16px 0px;
+    height: 40px;
+    border-top: #494c4e 3px solid;
+    background-image: url("/shared/LCS_HTML_Templates/HHS_Template_2021/_assets/img/logo.svg");
+    background-position: right top 10px;
+    background-repeat: no-repeat;
+}
+
+.leervragen li {
+    color: #7C8200
+}
+
+.leerstof {
+    color: green;
+}
+
+.videoLink {
+    color: #00748b;
+    text-decoration: none;
+    border-bottom: 1px solid #00748b;
+}
+
+.extraMaterial {
+    color: #a66bd3;
+}
+
+.contactImage {
+    width: 300px;
+}
+
+.contactImage img {
+    width: 100%; 
+    height: auto;
+}
+
+@media screen and (max-width: 640px) {
+    .contactImage {
+        width: auto;
+    }
+}
+
+.blended-wrapper {
+    border: 1px solid black;
+    padding: 0px 25px;
+
+}
+
+.mediasite-wrapper, .stream-wrapper, .youtube-wrapper {
+    background-color: #dddddd;
+}
+
+.wooclap-wrapper {
+    background-color: #ECF3FA;
+}
+
+.wooclap-p {
+    margin-top: 0px;
+}
+
+.wooclap-melding {
+    font-size: 10px;
+    color: red;
+}
+
+.answer-wrapper {
+    background-color: #eef7e9;
+    margin-top: 16px;
+}
+
+.download-wrapper {
+    background-color: #FFEFEF;
+}
+
+.toggle-wrapper {
+    cursor: pointer; 
+}
+
+.icon-div {
+    width: 35px; 
+    float: left;
+    padding-top: 12px;
+}
+
+.icon-img {
+    border: 0px;
+    width: 25px;
+    height: 25px;
+}
+
+.toggle-div {
+    overflow: hidden;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.mediasite-toggable-content, .stream-toggable-content, .youtube-toggable-content {
+    overflow: hidden;
+    position: relative;
+}
+
+.mediasite-toggable-content, .stream-toggable-content, .youtube-toggable-content {
+    padding-top: 56.25%;
+}
+
+.mediasite-iframe, .stream-iframe, .youtube-iframe {
+    width: 100%;
+    height: 100%;
+    border: 0px;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+
+.blended-code {
+    border: 1px solid #000000;
+    background-color: #f0f0f0;
+    font-family: Consolas;
+}
+
+.blended-code {
+    padding: 25px;
+}
+
+/* 
+ * De buitenste wrapper voor de PDF-viewer: Set max-width & max-height.
+ * Als max-height groter is dan padding-bottom%, dan wordt die waarde genegeerd en vervangen door padding-bottom% van max-width 
+ */
+.pdf-viewer {
+    max-width: 100%;
+    max-height: 500px; 
+    overflow: hidden;
+}
+
+/*
+ * Deze CSS maakt de binnenste wrapper (om het iframe met het PDF-document heen) binnen de PDF-viewer responsive.
+ * Height wordt bepaald op basis van padding-bottom in CSS hieronder.
+ *
+ * Vanwege een bug in CSS kan de volgende style niet hier worden gedefinieerd, maar moet die bij het element met deze class worden toegevoegd:
+ *
+ *      style="-webkit-overflow-scrolling: touch; overflow: auto;"
+ *
+ * Deze CSS wordt gebruikt voor het correct tonen van overflow en scrolling op mobiele apparaten en wordt toegevoegd aan de binnenste wrapper
+ * om het iframe heen waarbinnen het PDF-document wordt getoond.
+ */
+.responsive-pdf-wrapper {
+    position: relative;
+    height: 0;
+}
+
+/* 
+ * padding-bottom = hoogte / breedte als een %.
+ * Deze toont de PDF in de juiste verhouding of aspect ratio (die ook wordt gebruikt voor YouTube.
+ */
+.responsive-pdf-wrapper-wxh-572x612 {
+    padding-bottom: 107%;
+}
+
+.responsive-pdf-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 500px;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.set-pdf-viewer-box-shadow { 
+    -webkit-box-shadow: 4px 4px 14px #4f4f4f;
+    -moz-box-shadow: 4px 4px 14px #4f4f4f;
+    box-shadow: 4px 4px 14px #4f4f4f;
+}
+
+.set-pdf-viewer-margin {
+    margin: 15px;
+}
+
+.set-pdf-viewer-center-block-horiz {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}

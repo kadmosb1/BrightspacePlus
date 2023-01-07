@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html><head>
+
+  <script language="JavaScript">
+    
+    var strRootDir = document.URL.substr (0, document.URL.lastIndexOf ('/'));
+    var strScriptID = 'inline.v4';
+    var strJSFileName = strRootDir + '/resources/' + strScriptID + '.js';
+    var elmScript = document.createElement ('script');
+    elmScript.setAttribute ('src', strJSFileName);
+    elmScript.setAttribute ('async', false);
+    elmScript.setAttribute ('type', 'text/javascript');
+    elmScript.id = strScriptID;
+    document.head.appendChild (elmScript);
+
+    function logMessage (strType, strFileName, blnIsError) { 
+
+        if (blnIsError) {
+            console.log ('Error loading ' + strType + '-file \'' + strFileName + '\'');
+        }
+        else {
+            console.log (strType + '-file \'' + strFileName + '\' loaded');
+        }
+    }
+
+    elmScript.addEventListener ("load", () => { logMessage ('javascript', strJSFileName, false); });
+    elmScript.addEventListener ("error", (ev) => { logMessage ('javascript', strJSFileName, true); });
+
+    document.onreadystatechange = function () {
+
+        /*
+         * De plaatjes worden vanuit de juiste directory (met de aanroep van getImageURL) opgehaald.
+         */
+        if (typeof getImageURL === 'function') {
+            document.getElementById ('Icons').setAttribute ('src', getImageURL ('onderhoud/Onderhoud - Icons.jpg'));
+            document.getElementById ('JS_CSS').setAttribute ('src', getImageURL ('onderhoud/Onderhoud - JS en CSS.jpg'));
+            document.getElementById ('Plaatjes').setAttribute ('src', getImageURL ('onderhoud/Onderhoud - Plaatjes bij onderhoudspagina.jpg'));
+            document.getElementById ('Source').setAttribute ('src', getImageURL ('onderhoud/Onderhoud - Source Code.jpg'));
+        }
+    }
+
+  </script>
+
+</head>
+<body>
+
+
+<h2>Instelling voor testen</h2>
+<div class="test-instellingen"></div>
+<h2 navigatie="yes" style="border-bottom: #494c4e 1px solid; padding-bottom: 16px;" type="instructie">Hoe voeg ik een inhoudsopgave toe aan een pagina?</h2>
+Op een willekeurige plaats in het document kun je een inhoudsopgave toevoegen:
+<pre class="blended-code">&lt;div id="inhoudsopgave" visible="true"&gt;&lt;!-- Toon hier een inhoudsopgave --&gt;&lt;/div&gt;</pre>
+<p>Naast de id kun je twee andere attributen toevoegen:</p>
+<ul>
+    <li><span style="font-family: Consolas;">visible="true"</span>: Als dit attribuut is toegevoegd met deze waarde, is
+        de inhoudsopgave bij het tonen van de pagina meteen zichtbaar. Als dit attribuut een andere waarde heeft of
+        niet is toegevoegd, wordt de inhoudsopgave initieel onzichtbaar gemaakt en kan de gebruiker deze via een 
+        toggle-link alsnog zichtbaar maken.
+    </li>
+    <li><span style="font-family: Consolas;">niveau="3"</span>: Het niveau staat voor het maximum niveau waarop headers
+        worden getoond in de inhoudsopgave. Als het niveau is ingesteld op 3, dan worden h2 en h3 in de inhoudsopgave
+        getoond (maar worden de met h4 gemarkeerde paragrafen dus niet getoond). Als waarde kun je alleen kiezen voor
+        2, 3 of 4.
+    </li>
+</ul>
+<p>Als je bovenstaande code opneemt in je BrightSpace-pagina, wordt dat blokje getoond zoals hieronder:</p>
+<div class="blended-kader"><div id="inhoudsopgave" visible="true" niveau="3"><!-- Toon hier een inhoudsopgave --></div></div>
+
+
+<h2 navigatie="yes">De uitgangspunten</h2>
+<h3>De blended wrappers</h3>
+<p>De gekleurde 'wrappers' (met bijv. vids en code; zoals hieronder gebruikt) op de pagina worden opgebouwd m.b.v. JavaScript. Dit programma gaat ervan uit dat er een aantal files zijn toegevoegd aan specifieke directories.</p>
+
+
+<h3>De plaatjes die links als icon in de wrappers worden getoond.</h3>
+<p>Het gaat om de volgende plaatjes:</p>
+<ul>
+    <li>'Algemeen - Content.png' - Icoon bij de inhoudsopgave;</li>
+    <li>'Algemeen - Powerpoint.png' - Icoon voor Powerpoint-presentaties</li>
+    <li>'Algemeen - PDF.png' - Icoon voor PDF-documenten</li>
+    <li>'Algemeen - Play.png' - Icoon voor Mediasite-, MS Stream- & YouTube-vids;</li>
+    <li>'Algemeen - Proeftoets.png' - Icoon voor Wooclap-toetsen;</li>
+    <li>'Algemeen - Uitwerking.png' - Icoon voor de uitwerking van opdrachten;</li>
+    <li>'Algemeen - Download.png' - Icoon voor de download van files;</li>
+    <li>'Algemeen - Inhoudsopgave.png' en 'Algemeen - Inhoudsopgave - Inactief.png' - Icoontjes voor de navigatieknoppen naar de inhoudsopgave;</li>
+    <li>'Algemeen - Vorige.png' en 'Algemeen - Vorige - Inactief.png' - Icoontjes voor de navigatieknop naar een vorige paragraaf.</li>
+    <li>'Algemeen - Volgende.png' en 'Algemeen - Volgende - Inactief.png' - Icoontjes voor de navigatieknop naar een volgende paragraaf.</li>
+</ul>
+<p>Deze plaatjes moeten allen (met de specifieke namen hieronder) in de directory 'media' worden geplaatst:</p>
+<div class="blended-kader"><img id="Icons" alt="Directory voor de icons" title="Directory voor de icons" style="max-width: 100%;"></div>
+
+
+<h3>De files voor JavaScript en CSS</h3>
+<p>De content van de wrappers (met bijv. vids en uitwerkingen) wordt toegevoegd m.b.v. JavaScript. De opmaak van de wrappers is vastgelegd in een CSS-file. De wrappers worden alleen gevuld met content, als de files voor JavaScript (<span style="font-family: Consolas;">inline.v2.js</span>) en CSS (<span style="font-family: Consolas;">brightspace.css</span>) zijn toegevoegd aan directory 'resources':</p>
+<div class="blended-kader"><img id="JS_CSS" alt="JS- en CSS-files" title="JS- en CSS-files" style="max-width: 100%;"></div>
+
+
+<h3>De plaatjes op deze pagina</h3>
+<p>Het is belangrijk dat deze instructiepagina voor het onderhoud van de BrightSpace-pagina's mee wordt gekopieerd naar een nieuwe site. Daarvoor moeten ook de plaatjes mee die op de huidige pagina worden getoond. Kopieer daarvoor de gehele directory 'media/onderhoud' met inhoud mee naar de nieuwe site:</p>
+<div class="blended-kader"><img id="Plaatjes" alt="Plaatjes bij onderhoudspagina" title="Plaatjes bij onderhoudspagina" style="max-width: 100%;"></div>
+
+
+<h2 type="instructie" navigatie="yes">Activeren van de JavaScript</h2>
+<h3>Het toevoegen van de CSS</h3>
+<p>Naar de CSS hoef je niet om te kijken. Als je hieronder de JavaScript toevoegt op de pagina, wordt vanuit de JavaScript de juiste CSS-file geladen.</p>
+
+
+<h3>Het toevoegen van de JavaScript</h3>
+<p>Als je een blended element (mediasite-filmpje, wooclap-vragenlijst, download-link etc.) toe wilt voegen aan de pagina, is het belangrijk dat aan de bovenkant van de pagina code wordt toegevoegd. Je moet daarvoor de pagina bewerken ('...' &gt; 'Edit'). Als je de pagina bewerkt, kun je kiezen voor '&lt;/&gt;':</p>
+<div class="blended-kader"><img id="Source" alt="Bewerken van source code" title="Bewerken van source code" style="max-width: 100%;"></div>
+<p>Bovenaan elke pagina moet de volgende code worden toegevoegd (een paar elementen, zoals bijv. &lt;html&gt;, &lt;head&gt; en &lt;body&gt;, zijn bovenaan de pagina waarschijnlijk al toegevoegd):</p>
+<pre class="blended-code">&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;head&gt;
+
+  &lt;script language="JavaScript"&gt;
+ 
+    var strRootDir = document.URL.substr (0, document.URL.lastIndexOf ('/'));
+    var strScriptID = 'inline.v4';
+    var strJSFileName = strRootDir + '/resources/' + strScriptID + '.js';
+    var elmScript = document.createElement ('script');
+    elmScript.setAttribute ('src', strJSFileName);
+    elmScript.setAttribute ('async', false);
+    elmScript.setAttribute ('type', 'text/javascript');
+    elmScript.id = strScriptID;
+    document.head.appendChild (elmScript);
+   
+    function logMessage (strType, strFileName, blnIsError) { 
+
+        if (blnIsError) {
+            console.log ('Error loading ' + strType + '-file \'' + strFileName + '\'');
+        }
+        else {
+            console.log (strType + '-file \'' + strFileName + '\' loaded');
+        }
+    }
+
+    elmScript.addEventListener ("load", () =&gt; { logMessage ('javascript', strJSFileName, false); });
+    elmScript.addEventListener ("error", (ev) =&gt; { logMessage ('javascript', strJSFileName, true); });
+
+  &lt;/script&gt;
+
+&lt;/head&gt;
+
+&lt;body&gt;</pre>
+
+<h2 type="instructie" navigatie="yes">Opmaak van de pagina</h2>
+<h3>Een hoofdstuk</h3>
+<p>Als je een grotere titel wilt plaatsen boven een tekst (die wordt genummerd met 'Hoofdstuk x'), kun je &lt;h2&gt; gebruiken:</p>
+<div class="blended-kader"><h2 nummering="no" inhoud="no">Hoofdstuk x - Demo - Dit is een hoofdstuk</h2>
+</div>
+
+
+<h3>Een paragraaf</h3>
+<p>Als je een kleinere titel wilt plaatsen boven een tekst (die wordt genummerd met x.y), kun je &lt;h3&gt; gebruiken:</p>
+<div class="blended-kader">
+<h3 nummering="no" inhoud="no">x.y - Dit is een paragraaf</h3>
+</div>
+
+
+<h3>Een subparagraaf</h3>
+<p>Als je een nog kleinere titel wilt plaatsen boven een tekst (die wordt genummerd met x.y.z), kun je &lt;h4&gt; gebruiken:</p>
+<div class="blended-kader">
+<h4 nummering="no" inhoud="no">x.y.z - Dit is een subparagraaf</h4>
+</div>
+<p>Je kunt drie attributen toevoegen aan een hoofdstuk of (sub-)paragraaf:</p>
+<ul>
+<li><span style="font-family: Consolas;">nummering="no"</span>: Dit hoofdstuk of deze (sub-)paragraaf telt dan niet mee in de nummering en er wordt geen paragraafnummer toegekend aan het hoofdstuk of de paragraaf. Een voorbeeld: <span style="font-family: Consolas;">&lt;h3 nummering="no"&gt;</span>.</li>
+<li><span style="font-family: Consolas;">inhoud="no"</span>: Dit hoofdstuk of deze (sub-)paragraaf wordt dan niet getoond in de inhoudsopgave. Een voorbeeld: <span style="font-family: Consolas;">&lt;h4 inhoud="no"&gt;</span>.</li>
+<li><span style="font-family: Consolas;">id</span>: Om naar een hoofdstuk of (sub-)paragraaf te kunnen verwijzen, moet expliciet een id worden toegevoegd. Een voorbeeld: <span style="font-family: Consolas;">&lt;h4 id="opdracht-garage"&gt;</span>.</li>
+<li><span style="font-family: Consolas;">type</span>: Dit type wordt gebruikt in een interne link en wordt toegevoegd aan de zichtbare titel. Een voorbeeld (zoals hierboven): <span style="font-family: Consolas;">&lt;h2 type="demo"&gt;</span>.</li>
+</ul>
+
+
+<h3 navigatie="yes">Hoe voeg ik een blokje toe, waarin evt. studietijd en navigatie worden getoond?</h3>
+<p>Bovenaan elk element van het type h2, h3 of h4 (bovenaan een hoofdstuk of (sub-)paragraaf) kan een blokje worden getoond met studietijd en/of navigatie. Wat is er nodig om zo'n blokje te tonen?</p>
+<ul>
+<li><span style="font-family: Consolas;">navigatie="yes"</span>: Als dit attribuut met deze waarde is toegevoegd, wordt rechts in dit blokje navigatie getoond die kan verwijzen naar een vorige paragraaf, naar de inhoudsopgave (als die bestaat) of naar een volgende paragraaf. De verwijzing naar een vorige of volgende paragraaf is alleen actief als er voorafgaand aan (voor vorige) of na (voor volgende) de huidige paragraaf één of meer paragrafen bestaan waarvoor ook '<span style="font-family: Consolas;">navigatie="yes"</span>' is ingesteld.</li>
+<li><span style="font-family: Consolas;">studietijd</span>: Als studietijd wordt het aantal minuten opgegeven. Dit aantal minuten wordt omgerekend naar (halve) uren, kwartieren en minuten en getoond in dit blokje.</li>
+<li><span style="font-family: Consolas;">studietijd="som"</span>: Idem als bij studietijd, maar nu voor de optelling van de paragrafen die vallen onder dit hoofdstuk of deze paragraaf.</li>
+<li><span style="font-family: Consolas;">studietijd="totaal"</span>: Idem als bij studietijd, maar nu voor de hele pagina.</li>
+<li><span style="font-family: Consolas;">studietijd="extra: 20"</span>: Eventueel kan met de toevoeging 'extra' worden aangegeven dat de stof in de daarna volgende paragraaf facultatief is.</li>
+</ul>
+<p>Stel dat je die verschillende combinaties als volgt opneemt op je pagina:</p>
+<pre class="blended-code">&lt;h2 studietijd="totaal"&gt;Hoofdstuk met de optelling van alle studietijden op de hele pagina&lt;/h3&gt;
+&lt;h3 studietijd="som"&gt;Paragraaf met de optelling van de onderliggende studietijden&lt;/h3&gt;
+&lt;h4 studietijd="extra: 121" navigatie="yes"&gt;Subparagraaf met een studietijd van 121 minuten en navigatie&lt;/h4&gt;
+&lt;h4 studietijd=75&gt;Tweede subparagraaf met alleen een studietijd van 75 minuten&lt;/h4&gt;
+&lt;h3 studietijd="som"&gt;Paragraaf zonder onderliggende studietijd&lt;/h3&gt;
+&lt;h4 navigatie="yes"&gt;Subparagraaf met alleen navigatie&lt;/h4&gt;</pre>
+<p>Dan wordt het volgende getoond:</p>
+<h2 studietijd="totaal">Hoofdstuk met de optelling van alle studietijden op de hele pagina</h2>
+<h3 studietijd="som" inhoud="no">Paragraaf met de optelling van de onderliggende studietijden</h3>
+<h4 studietijd="extra: 121" navigatie="yes" inhoud="no">Subparagraaf met extra studietijd van 121 minuten en navigatie</h4>
+<h4 studietijd=75 inhoud="no">Tweede subparagraaf met alleen toetsstof van 75 minuten</h4>
+<h3 studietijd="som" inhoud="no">Paragraaf zonder onderliggende studietijd</h3>
+<h4 navigatie="yes" inhoud="no">Paragraaf met alleen navigatie</h4>
+
+
+<h2 type="instructie" navigatie="yes">Hoe voeg je links toe aan een pagina?</h2>
+<p>Voor het toevoegen van een link kun je gewoon gebruik maken van de standaard functionaliteit van BrightSpace. Eventueel kun je de extra attributen toevoegen die hieronder worden beschreven.</p>
+
+
+<h3 id="extern" type="demo">Externe links</h3>
+<p>Voor een externe link hoef je geen attributen toe te voegen. Stel dat je onderstaande link hebt toegevoegd aan je pagina:</p>
+<div class="blended-code">&lt;a href="https://lelij.com"&gt;Pagina van Karel J. van der Lelij&lt;/a&gt;</div>
+<p>Dan wordt deze link als volgt getoond en wordt deze link in een nieuwe tab geopend:</p>
+<div class="blended-kader"><a href="https://lelij.com">Pagina van Karel J. van der Lelij</a></div>
+
+
+<h3 id="intern">Demo - Interne links</h3>
+<p>Voor een interne link hoef je geen attributen toe te voegen, maar het mag wel:</p>
+<ul>
+    <li><span style="font-family: Consolas;">title</span>: Deze title vervangt de zichtbare inhoud van de link. %t in deze title wordt vervangen door het type van de aangewezen link en %p wordt vervangen door het nummer van de paragraaf van de aangewezen link. In de eerste link wordt verwezen naar paragraaf <a href="#extern" title="%p">x</a> (de vorige paragraaf). Omdat het attribuut 'type' van deze paragraaf de waarde "demo" heeft, wordt %t in deze titel vervangen door het woord "demo". In de tweede link wordt verwezen naar paragraaf <a href="#intern" title="%p">x</a> (de huidige paragraaf). Omdat voor deze paragraaf geen type is gedefinieerd, wordt %t in de zichtbare titel vervangen door het woord "paragraaf".</li>
+</ul>
+<p>Stel dat je onderstaande links hebt toegevoegd aan je pagina (omdat de eerste link verwijst naar een paragraaf zonder type, wordt %t vervangen door 'paragraaf':</p>
+<div class="blended-code">&lt;a href="#extern" title="%t %p"&gt;x&lt;/a&gt;<br>&lt;a href="#intern" title="%t %p"&gt;x&lt;/a&gt;<br></div>
+<p>Dan wordt deze link als volgt getoond en wordt deze link in een nieuwe tab geopend:</p>
+<div class="blended-kader"><a href="#extern" title="%t %p">x</a><br><a href="#intern" title="%t %p">x</a></div>
+
+
+<h2 navigatie="yes">Hoe voeg je de wrappers toe?</h2>
+<h3>Het toevoegen van een codevoorbeeld</h3>
+<p>Soms wil je een codevoorbeeld geven (dat gebruik ik hieronder voor de code die je gebruikt om opgemaakte code te tonen, maar ik heb het hierboven ook gebruikt om er een plaatje in te tonen). Om zo'n codevoorbeeld te tonen voeg je - op de plek waar je dat wilt tonen - de volgende code toe aan je pagina:</p>
+<pre class="blended-code">&lt;pre class="blended-code"&gt;Dit is een voorbeeld
+  
+En dit is een volgende regel&lt;/pre&gt;</pre>
+<p>Let daarbij op het volgende:</p>
+<ul>
+<li>Je kunt hierbij gebruik maken van een <span style="font-family: Consolas;">&lt;div&gt;</span> of van een <span style="font-family: Consolas;">&lt;pre&gt;</span>. In een <span style="font-family: Consolas;">&lt;div&gt;</span> worden nieuwe regels en meer dan één spatie achter elkaar genegeerd. In een <span style="font-family: Consolas;">&lt;pre&gt;</span> wordt elke enter en elke spatie letterlijk getoond.</li>
+<li>
+<p>Als je &lt; of &gt; gebruikt in zo'n code-wrapper dan worden die als HTML gelezen. Vervang deze haakjes daarom door '<span style="font-family: Consolas;">&amp;lt;</span>' voor &lt; en '<span style="font-family: Consolas;">&amp;gt;</span>' voor &gt;.</p>
+</li>
+</ul>
+<p>Als je bovenstaande code opneemt in je BrightSpace-pagina, wordt dat blokje getoond zoals hieronder:</p>
+<pre class="blended-code">Dit is een voorbeeld
+  
+En dit is een volgende regel</pre>
+
+
+<h3 navigatie="yes">Het toevoegen van een Mediasite-, MS Stream- en/of YouTube-vid</h3>
+<p>De wrapper voor een video is het meest ingewikkelde onderdeel dat je kunt gebruiken. Elke video op een pagina kun je namelijk ook nog automatisch op laten nemen in een lijst met video's die op de pagina worden getoond. Om zo'n lijst met video's toe te voegen, neem je - op de plek waar je die lijst met video's wilt opnemen - de volgende code op:</p>
+<pre class="blended-code">&lt;div class="video-list-wrapper"&gt;&lt;!-- Toon links naar gebruikte video's op deze pagina --&gt;&lt;/div&gt;</pre>
+<p>Om een video toe te voegen (die ook in de lijst wordt getoond), gebruik je de volgende code:</p>
+<ul>
+<li>Voor Mediasite:
+<pre class="blended-code">&lt;div mediasite-id="f9e8ef2a38184d158b5b8d1f115106b31d" title="Een %t-filmpje in paragraaf %p"&gt;&lt;/div&gt;</pre>
+</li>
+<li>Voor MS Stream:
+<pre class="blended-code">&lt;div stream-id="ea8e83e0-888b-4f22-a1c7-b15e842d0bec" title="Een %t-filmpje in paragraaf %p"&gt;&lt;/div&gt;</pre>
+</li>
+<li>Voor Mediasite:
+<pre class="blended-code">&lt;div youtube-id="ZDpQQj3r_W8" title="Een %t-filmpje in paragraaf %p" visible="true"&gt;&lt;/div&gt;</pre>
+</li>
+</ul>
+<p>De gebruikte attributen hebben de volgende betekenis:</p>
+<ul>
+<li><span style="font-family: Consolas;">mediasite-id</span>: De id die verwijst naar een vid in MediaSite (zoals in <a href="https://hhs.mediamission.nl/Mediasite/Play/f9e8ef2a38184d158b5b8d1f115106b31d" target="_blank" rel="noopener">https://hhs.mediamission.nl/Mediasite/Play/<span class="melding">f9e8ef2a38184d158b5b8d1f115106b31d</span></a>).</li>
+<li><span style="font-family: Consolas;">stream-id</span>: De id die verwijst naar een vid in MS Stream (zoals in <a href="https://web.microsoftstream.com/video/ea8e83e0-888b-4f22-a1c7-b15e842d0bec" target="_blank" rel="noopener">https://web.microsoftstream.com/video/<span class="melding">ea8e83e0-888b-4f22-a1c7-b15e842d0bec</span></a>).</li>
+<li><span style="font-family: Consolas;">youtube-id</span>: De id die verwijst naar een vid in YouTube (zoals in <a href="https://www.youtube.com/watch?v=ZDpQQj3r_W8" target="_blank" rel="noopener">https://www.youtube.com/watch?v=<span class="melding">ZDpQQj3r_W8</span></a>).</li>
+<li><span style="font-family: Consolas;">paragraph</span>: De paragraaf waarbinnen de video wordt getoond (Hieronder is een video toegevoegd aan paragrafen <a href="#MediaSite" title="%p">x</a>, <a href="#MSStream" title="%p">x</a> en <a href="#YouTube" title="%p">x</a>). <span class="melding">Dit attribuut is overbodig, omdat dit attribuut wordt overschreven door de automatische nummering van hoofdstukken en (sub-)paragrafen.</span></li>
+<li><span style="font-family: Consolas;">title</span>: Deze bevat een korte beschrijving van de inhoud van de video. %t en %p in deze title verwijzen naar respectievelijk het type en het nummer van de paragraaf waarin dit element is opgenomen en worden vervangen door deze informatie.</li>
+<li><span style="font-family: Consolas;">visible="true"</span>: Als dit attribuut is toegevoegd met deze waarde, is
+    de video (of de video-list) bij het tonen van de pagina meteen zichtbaar. Als dit attribuut een andere waarde heeft of
+    niet is toegevoegd, wordt de video (of de video-list) initieel onzichtbaar gemaakt en kan de gebruiker deze via een 
+    toggle-link alsnog zichtbaar maken.
+</li>
+</ul>
+<p>Als je bovenstaande codes (met toegevoegde paragrafen) gebruikt, worden een lijst (met in dit geval drie video's) en de drie video's getoond:</p>
+<div class="blended-kader">
+<h4 style="margin-top: 0px;">De lijst met gebruikte video's op deze pagina</h4>
+<div class="video-list-wrapper"><!-- Toon links naar gebruikte video's op deze pagina --></div>
+<h4 id="MediaSite" type="MediaSite">Een voorbeeld van een video in MediaSite</h4>
+<div mediasite-id="f9e8ef2a38184d158b5b8d1f115106b31d" title="Een %t-filmpje in paragraaf %p"></div>
+<h4 id="MSStream" type="MS Stream">Een voorbeeld van een video in MS Stream</h4>
+<div stream-id="ea8e83e0-888b-4f22-a1c7-b15e842d0bec" title="Een %t-filmpje in paragraaf %p"></div>
+<h4 id="YouTube" type="YouTube">Een voorbeeld van een video in YouTube</h4>
+<div youtube-id="ZDpQQj3r_W8" title="Een %t-filmpje in paragraaf %p" visible="true"></div>
+</div>
+
+
+<h3 navigatie="yes">Het toevoegen van een Wooclap en/of een Wooflash (quiz of proeftoets)</h3>
+<p>Om een Wooclap- en/of Wooflash-vragenlijst toe te voegen, gebruik je de volgende code:</p>
+<pre class="blended-code">&lt;div wooclap-dir="PR210/questionnaires/619626f40d21011226ce5d48" 
+     wooflash-id="3ab639d3-ee25-48e9-9105-253aea5d948b"&gt;&lt;/div&gt;
+
+&lt;div wooclap-dir="PR210/questionnaires/619626f40d21011226ce5d48" type="vraag"&gt;&lt;/div&gt;</pre>
+<p>De gebruikte attributen hebben de volgende betekenis:</p>
+<ul>
+<li><span style="font-family: Consolas;">wooclap-dir</span>: De relatieve link die verwijst naar een vragenlijst in Wooclap (<a href="https://app.wooclap.com/PR210/questionnaires/619626f40d21011226ce5d48">https://app.wooclap.com/<span class="melding">PR210/questionnaires/619626f40d21011226ce5d48</span></a>).</li>
+<li><span style="font-family: Consolas;">wooflash-id</span>: De id van een vragenlijst in Wooflash (<a href="https://app.wooflash.com/study/3ab639d3-ee25-48e9-9105-253aea5d948b">https://app.wooflash.com/study/<span class="melding">3ab639d3-ee25-48e9-9105-253aea5d948b</span></a>).</li>
+<li><span style="font-family: Consolas;">type</span>: Met dit attribuut kun je onderscheid maken tussen de teksten die boven de wrapper worden getoond voor een <span style="font-family: Consolas;">proeftoets</span> of een <span style="font-family: Consolas;">vraag</span>. Als een wooflash-id wordt toegevoegd, is het type overbodig.</li>
+<li><span style="font-family: Consolas;">visible="true"</span>: Als dit attribuut is toegevoegd met deze waarde, is
+    de quiz bij het tonen van de pagina meteen zichtbaar. Als dit attribuut een andere waarde heeft of
+    niet is toegevoegd, wordt de quiz initieel onzichtbaar gemaakt en kan de gebruiker deze via een 
+    toggle-link alsnog zichtbaar maken.
+</li>
+</ul>
+<p>Als je bovenstaande code (met toegevoegde paragrafen) gebruikt voor een proeftoets of vragenlijst worden twee wrappers met een proeftoets en een vragenlijst getoond (die een zelfde vragenlijst gebruiken, omdat dezelfde link wordt gebruikt):</p>
+<div class="blended-kader">
+<h4 style="margin-top: 0px;">Een voorbeeld van een proeftoets (met alleen Wooclap)</h4>
+<div wooclap-dir="PR210/questionnaires/619626f40d21011226ce5d48" type="proeftoets" visible="true"></div>
+<h4 style="margin-top: 0px;">Een voorbeeld van een proeftoets (met alleen Wooflash)</h4>
+<div wooflash-id="3ab639d3-ee25-48e9-9105-253aea5d948b"></div>
+<h4 style="margin-top: 0px;">Een voorbeeld van een proeftoets (met zowel Wooclap als Wooflash)</h4>
+<div wooclap-dir="PR210/questionnaires/619626f40d21011226ce5d48" wooflash-id="3ab639d3-ee25-48e9-9105-253aea5d948b"></div>
+<h4>Een voorbeeld van een (korte) vragenlijst</h4>
+<div wooclap-dir="PR210/questionnaires/619626f40d21011226ce5d48" type="wooclap-vraag"></div>
+</div>
+
+
+<h3 navigatie="yes">Het toevoegen van de uitwerking van een opdracht</h3>
+<p>Om de uitwerking van een opdracht toe te voegen, gebruik je de volgende code:</p>
+<pre class="blended-code">&lt;pre&gt;public class Main {
+
+    public static void main(String[] args) {
+        System.out.println ("Hello world!");
+    }
+}&lt;/pre&gt;</pre>
+<p>In de zichtbare titel boven de uitwerking worden gegevens verwerkt van het hoofdstuk of de (sub-)paragraaf waarin de uitwerking voorkomt. De structuur van deze titel is "Klik hier om de uitwerking van %t %p (on-)zichtbaar te maken". In deze titel wordt %t vervangen door de waarde van het attribuut 'type' van de paragraaf en %p door de waarde van het attribuut 'paragraph' van het hoofdstuk/de (sub-)paragraaf waarin de uitwerking voorkomt. Het attribuut paragraph wordt automatisch toegekend. Het attribuut 'type' moet je zelf toevoegen aan dit hoofdstuk/deze (sub-)paragraaf. Als het attribuut 'type' niet is gedefinieerd, wordt %t op basis van het type van het hoofdstuk/de (sub-)paragraaf vervangen door 'hoofdstuk' of 'paragraaf'.</p>
+<p>Het gebruikte attribuut heeft de volgende betekenis:</p>
+<ul>
+<li><span style="font-family: Consolas;">paragraph</span>: <span class="melding">Dit attribuut is overbodig geworden, omdat dit attribuut wordt overschreven door de automatische nummering van hoofdstukken en (sub-)paragrafen.</span> De paragraaf waarin de opdracht (en dus ook de uitwerking daarvan) wordt beschreven (op deze pagina is de uitwerking van de opdracht toegevoegd aan paragraaf <a href='#antwoord' title='%p'>x</a>). Deze paragraaf wordt gebruikt in de titel van de uitwerking.</li>
+<li><span style="font-family: Consolas;">visible="true"</span>: Als dit attribuut is toegevoegd met deze waarde, is
+    de uitwerking bij het tonen van de pagina meteen zichtbaar. Als dit attribuut een andere waarde heeft of
+    niet is toegevoegd, wordt de uitwerking initieel onzichtbaar gemaakt en kan de gebruiker deze via een 
+    toggle-link alsnog zichtbaar maken.
+</li>
+</ul>
+<p>Als je bovenstaande code (met toegevoegde paragraaf) gebruikt voor de uitwerking van een opdracht wordt de wrapper met de uitwerking getoond:</p>
+<div class="blended-kader">
+<h4 style="margin-top: 0px; margin-bottom: 0px;" type="opdracht" id="antwoord">Een voorbeeld van de uitwerking van een opdracht</h4>
+<pre>public class Main {
+
+    public static void main(String[] args) {
+        System.out.println ("Hello world!");
+    }
+}</pre>
+</div>
+
+
+<h3 navigatie="yes">Het toevoegen van download-link</h3>
+<p>Om een downloadlink toe te voegen, gebruik je de volgende code (die hier wordt gegeven voor zowel een absolute link als voor een relatieve link):</p>
+<pre class="blended-code">&lt;div download-root="relative"
+     download-link="media/onderhoud/Onderhoud - Voorbeeldpresentatie.pptx"
+     title="Een voorbeeldpresentatie"&gt;&lt;/div&gt;
+
+&lt;div download-root="absolute"
+<script>document.write ('     download-link="' + strRootDir +
+                              '/media/onderhoud/Onderhoud&nbsp;-&nbsp;Voorbeeldpresentatie.pptx"<br>     title="Een voorbeeldpresentatie"&gt;&lt;/div&gt;');</script>
+</pre>
+<p>De gebruikte attributen hebben de volgende betekenis:</p>
+<ul>
+<li><span style="font-family: Consolas;">download-link</span>: De link naar een file die kan worden gedownload.</li>
+<li><span style="font-family: Consolas;">download-root</span>: Is de link absoluut (startend met <span style="font-family: Consolas;">https://...</span>, <span style="font-family: Consolas;">https://...</span> of <span style="font-family: Consolas;">file://...</span>) of relatief (en wordt er dus
+<script>document.write ('\'<span style="font-family: Consolas;">' + strRootDir + '</span>\'');</script>
+voor de link geplakt).</li>
+<li><span style="font-family: Consolas;">title</span>: Deze <span style="font-family: Consolas;">title</span> wordt gebruikt om de link te tonen met de beschrijving van de link.</li>
+</ul>
+<p>Als je bovenstaande code (met toegevoegde paragrafen) gebruikt voor download-links worden de wrappers met de links getoond:</p>
+<div class="blended-kader">
+<h4 style="margin-top: 0px;">Een voorbeeld van een relative download</h4>
+<div download-root="relative" download-link="media/onderhoud/Onderhoud - Voorbeeldpresentatie.pptx" title="Een voorbeeldpresentatie"></div>
+<h4>Een voorbeeld van een absolute download</h4>
+<script>document.write ('<div download-root="absolute" download-link="' + strRootDir + '/media/onderhoud/Onderhoud - Voorbeeldpresentatie.pptx" title="Een voorbeeldpresentatie"></div>');</script>
+</div>
+
+
+<h3 navigatie="yes">Het toevoegen van een PDF-viewer</h3>
+<p>Je kunt een PDF-document ook direct in je pagina zichtbaar maken. Daarvoor gebruik je de volgende code (die hier wordt gegeven voor zowel een absolute als voor een relatieve link):</p>
+<pre class="blended-code">&lt;div pdf-root="relative" pdf="media/onderhoud/Onderhoud - Voorbeeld.pdf"&gt;&lt;div&gt;
+<script>document.write ('&lt;div pdf-root="absolute" pdf="' + strRootDir + '/media/onderhoud/Onderhoud - Voorbeeld.pdf"&gt;&lt;div&gt;');</script>
+</pre>
+<p>De gebruikte attributen hebben de volgende betekenis:</p>
+<ul>
+<li><span style="font-family: Consolas;">pdf</span>: De link naar de PDF-file die moet worden getoond.</li>
+<li><span style="font-family: Consolas;">pdf-root</span>: Is de link absoluut (startend met <span style="font-family: Consolas;">https://...</span>, <span style="font-family: Consolas;">https://...</span> of <span style="font-family: Consolas;">file://...</span>) of relatief (en wordt er dus
+<script>document.write ('\'<span style="font-family: Consolas;">' + strRootDir + '/</span>\'');</script>
+voor de link geplakt).</li>
+<li><span style="font-family: Consolas;">visible="true"</span>: Als dit attribuut is toegevoegd met deze waarde, is
+    het PDF-document bij het tonen van de pagina meteen zichtbaar. Als dit attribuut een andere waarde heeft of
+    niet is toegevoegd, wordt het PDF-document initieel onzichtbaar gemaakt en kan de gebruiker deze via een 
+    toggle-link alsnog zichtbaar maken.
+</li>
+</ul>
+<p>Als je bovenstaande code (met toegevoegde paragrafen) gebruikt, wordt het PDF-document twee keer getoond:</p>
+<div class="blended-kader">
+<h4>Een voorbeeld van een absolute PDF-document</h4>
+<script>document.write ('<div pdf-root="absolute" pdf="' + strRootDir + '/media/onderhoud/Onderhoud - Voorbeeld.pdf"></div>');</script>
+<h4 style="margin-top: 0px;">Een voorbeeld van een relative PDF-document</h4>
+<div pdf-root="relative" pdf="media/onderhoud/Onderhoud - Voorbeeld.pdf"></div>
+</div>
+
+
+<h3 navigatie="yes">Het toevoegen van een FAQ</h3>
+<p>Om een FAQ op je pagina toe te voegen, gebruik je de volgende code:</p>
+<pre class="blended-code">&lt;div header="4" werkvorm="het hoorcollege" title="Een voorbeeld van een FAQ"&gt;
+    &lt;div&gt;
+        &lt;div&gt;Vraag 1&lt;/div&gt;
+        &lt;div&gt;Antwoord 1&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+        &lt;div&gt;Vraag 2&lt;/div&gt;
+        &lt;div&gt;Antwoord 2&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</pre>
+</pre>
+<p>Deze FAQ wordt getoond in een vaste opmaak. De gebruikte attributen hebben de volgende betekenis:</p>
+<ul>
+<li><span style="font-family: Consolas;">werkvorm</span>: Deze werkvorm wordt verwerkt in de toelichting op de FAQ.</li>
+<li><span style="font-family: Consolas;">header</span>: Het nummer voor de paragraaf (die default op 3 voor H3 staat).</li>
+<li><span style="font-family: Consolas;">title</span>: De titel die boven de FAQ wordt getoond (standaard is dat FAQ).</li>
+</ul>
+<p>Als je bovenstaande code gebruikt voor een FAQ, wordt de wrapper met de FAQ getoond:</p>
+<div class="blended-kader">
+<div header="4" werkvorm="het hoorcollege" title="Een voorbeeld van een FAQ">
+    <div>
+        <div>Vraag 1</div>
+        <div>Antwoord 1</div>
+    </div>
+    <div>
+        <div>Vraag 2</div>
+        <div>Antwoord 2</div>
+    </div>
+</div>
+<div header="4" werkvorm="het hoorcollege" title="Een tweede voorbeeld van een FAQ">
+    <div>
+        <div>Vraag 1</div>
+        <div>Antwoord 1</div>
+    </div>
+    <div>
+        <div>Vraag 2</div>
+        <div>Antwoord 2</div>
+    </div>
+    <div>
+        <div>Vraag 3</div>
+        <div>Antwoord 3</div>
+    </div>
+</div>
+</div>
+
+
+<h3 navigatie="yes">Het toevoegen van een PowerPoint-presentatie</h3>
+<p>Je kunt een PPTX op je pagina toevoegen die de studenten kunnen bekijken in BrightSpace. Die PPTX kan op verschillende plekken staan: in OneDrive for Business, Teams of SharePoint.</p>
+<h4>Hoe maak je een PowerPoint beschikbaar voor studenten?</h4>
+<p>
+    In de screenshots hieronder ga ik ervan uit dat de presentaties zijn verzameld in een directory zodat de rechten
+    in één keer voor een aantal presentaties tegelijk kunnen worden ingesteld. Uiteraard kunnen deze rechten ook per
+    presentatie worden ingesteld.
+</p>
+<div class="blended-kader">
+<p>Browse naar de juiste directory, selecteer met je muisknop ⋮ achter deze directory en kies voor 'Toegang beheren':</p>
+<script>document.write ('<p><img src="' + strRootDir + '/media/onderhoud/Onderhoud - PPTX - Delen.jpg" class="img-pptx" width="100%"></p>');</script>
+<p>Kies voor 'Geavanceerd':</p>
+<script>document.write ('<p><img src="' + strRootDir + '/media/onderhoud/Onderhoud - PPTX - Geavanceerd.jpg" class="img-pptx" width="100%"></p>');</script>
+<p>Kies voor 'Overname van machtigingen stoppen':</p>
+<script>document.write ('<p><img src="' + strRootDir + '/media/onderhoud/Onderhoud - PPTX - Overname.jpg" class="img-pptx" width="100%"></p>');</script>
+<p>Kies voor 'Machtigingen verlenen':</p>
+<script>document.write ('<p><img src="' + strRootDir + '/media/onderhoud/Onderhoud - PPTX - Verlenen.jpg" class="img-pptx" width="100%"></p>');</script>
+<p>Voer 'Iedereen behalve externe gebruikers' in, deselecteer 'Een uitnodiging per e-mail verzenden', selecteer 'Lezen' en druk op de knop 'Delen' :</p>
+<script>document.write ('<p><img src="' + strRootDir + '/media/onderhoud/Onderhoud - PPTX - Iedereen.jpg" class="img-pptx" width="100%"></p>');</script>
+<p>Sluit het tabblad (of ga terug naar de pagina met de directory als bovenstaande niet in een apart tabblad is ge-opend).</p> 
+</div>
+<h4>Hoe maak je een PowerPoint-presentatie zichtbaar in BrightSpace?</h4> 
+<p>Om een PPTX vanuit OneDrive for Business toe te voegen op je pagina, gebruik je de volgende code:</p>
+<pre class="blended-code">&lt;div account="kjvdlelij_hhs_nl" pptx-id="b9c05657-f1ad-4d68-9fdd-b01e6a3d29a6"&gt;&lt;/div&gt;</pre>
+<p>Om een PPTX vanuit SharePoint of Teams toe te voegen op je pagina, gebruik je de volgende code:</p>
+<pre class="blended-code">&lt;div site="SE2-2021-2022_groups" pptx-id="703c7cf7-3ce7-4f57-bee9-b2def3aa70c3"&gt;&lt;/div&gt;</pre>
+<p>De presentaties worden binnen BrightSpace getoond door OneDrive, SharePoint of Teams. De gebruikte attributen hebben de volgende betekenis:</p>
+<ul>
+<li><span style="font-family: Consolas;">account</span>: Het account dat in de link wordt gebruikt om in OneDrive te kunnen verwijzen naar de juiste directory (zoals in <a href="https://dehaagsehogeschool-my.sharepoint.com/personal/kjvdlelij_hhs_nl/_layouts/15/Doc.aspx?sourcedoc={b9c05657-f1ad-4d68-9fdd-b01e6a3d29a6}">https://dehaagsehogeschool-my.sharepoint.com/personal/<span class="melding">kjvdlelij_hhs_nl</span>/_layouts/15/Doc.aspx?sourcedoc={b9c05657-f1ad-4d68-9fdd-b01e6a3d29a6}&amp;action=embedview&amp;wdAr=1.7777777777777777</a>).</li>
+<li><span style="font-family: Consolas;">site</span>: De site die in de link wordt gebruikt om in SharePoint of Teams te kunnen verwijzen naar de juiste site (zoals in <a href="https://dehaagsehogeschool.sharepoint.com/sites/SE2-2021-2022_groups/_layouts/15/Doc.aspx?sourcedoc={703c7cf7-3ce7-4f57-bee9-b2def3aa70c3}">https://dehaagsehogeschool.sharepoint.com/sites/<span class="melding">SE2-2021-2022_groups</span>/_layouts/15/Doc.aspx?sourcedoc={703c7cf7-3ce7-4f57-bee9-b2def3aa70c3}&amp;action=embedview&amp;wdAr=1.7777777777777777</a>).</li>
+<li><span style="font-family: Consolas;">pptx-id</span>: Het id dat in de link wordt gebruikt om in OneDrive, SharePoint of Teams te kunnen verwijzen naar de juiste file (zoals in <a href="https://dehaagsehogeschool.sharepoint.com/sites/SE2-2021-2022_groups/_layouts/15/Doc.aspx?sourcedoc={703c7cf7-3ce7-4f57-bee9-b2def3aa70c3}">https://dehaagsehogeschool.sharepoint.com/sites/SE2-2021-2022_groups/_layouts/15/Doc.aspx?sourcedoc={<span class="melding">703c7cf7-3ce7-4f57-bee9-b2def3aa70c3</span>}&amp;action=embedview&amp;wdAr=1.7777777777777777</a>).</li>
+<li><span style="font-family: Consolas;">visible="true"</span>: Als dit attribuut is toegevoegd met deze waarde, is
+    de presentatie bij het tonen van de pagina meteen zichtbaar. Als dit attribuut een andere waarde heeft of
+    niet is toegevoegd, wordt de presentatie initieel onzichtbaar gemaakt en kan de gebruiker deze via een 
+    toggle-link alsnog zichtbaar maken.
+</li>
+</ul>
+<p>Als je bovenstaande code gebruikt voor een presentatie in OneDrive for Business, SharePoint of Teams, worden de wrappers (met toegevoegde paragrafen) met de presentatie getoond:</p>
+<div class="blended-kader">
+    <h4>Presentatie in OneDrive for Business</h4>
+    <div account="kjvdlelij_hhs_nl" pptx-id="b9c05657-f1ad-4d68-9fdd-b01e6a3d29a6"></div>
+    <h4>Presentatie in Teams (identiek aan een presentatie in SharePoint)</h4>
+    <div site="SE2-2021-2022_groups" pptx-id="703c7cf7-3ce7-4f57-bee9-b2def3aa70c3"></div>
+</div>
+
+
+</body></html>
