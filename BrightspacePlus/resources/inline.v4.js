@@ -211,7 +211,7 @@ window.onload = function (event) {
 	objPagina.addSecties ();
 	objPagina.updateLinks ();
 	objPagina.embedContent ();
-	toonAlleEventsInTabel ();
+	// toonAlleEventsInTabel ();
 };
 
 // /////////////////////////////////////////////////////////////////////////// //
@@ -625,50 +625,6 @@ class Studietijd {
 			var intStudietijd = Studietijd.getStudietijd (domParagraaf);
 			blnIsExtraTijd ? this.intExtraTijd += intStudietijd : this.intToetstijd += intStudietijd;
 		}
-
-
-			/*
-			 * Het zoeken naar volgende paragrafen moet stoppen als een zelfde type paragraaf of
-			 * een hoger type paragraaf wordt gevonden (voor een paragraaf van het type h3
-			 * stopt het zoeken bijv. als bij het zoeken een zelfde type paragraaf met h3 of
-			 * een hoofdstuk (h2) wordt gevonden).
-			 */
-			// var strStop = '';
-
-			/*
-			for (let i = +domStart.tagName.charAt (1); i >= 2; i--) {
-
-				if (strStop) {
-					strStop += ', '
-				}
-
-				strStop += 'h' + i;
-			}
-			*/
-/*
-			var domNext = domStart.nextElementSibling;
-			var strTagName;
-
-			if (domNext) {
-				strTagName = domNext.tagName.toLowerCase ();
-			}
-
-			while (domNext && !strStop.includes (strTagName)) {
-
-				/*
-				 * elementen die niet van het type h2, h3 of h4 zijn, worden overgeslagen. Studietijden
-				 * zijn alleen gedefinieerd voor hoofdstukken en/of (sub-)paragrafen.
-				 */
-/*				if ('h2,h3,h4'.includes (strTagName)) {
-					var blnIsExtraTijd = Studietijd.isParagraafMetExtraTijd (domNext);
-					var intStudietijd = Studietijd.getStudietijd (domNext);
-					blnIsExtraTijd ? this.intExtraTijd += intStudietijd : this.intToetstijd += intStudietijd;
-				}
-
-				domNext = domNext.nextElementSibling;
-				strTagName = (domNext ? domNext.tagName.toLowerCase () : '');
-			}*/
-		// }
 	}
 
 	get strSomTekst () {
@@ -1067,27 +1023,27 @@ class ResizeButton {
 		}
 	}
 
-    toggleFullscreen () {
+  toggleFullscreen () {
 
-    	objPagina.activeerSectie (this.domSectie);
+  	objPagina.activeerSectie (this.domSectie);
 
-    	if (!document.fullscreenElement) {
+  	if (!document.fullscreenElement) {
 
-            objPagina.objPopup.domPopup.requestFullscreen ().catch ((err) => {
-                console.log (`Error attempting to enable fullscreen mode: ${err.message} (${err.name})`);
-                return;
-            });
-    	}
-    	else {
-    		objPagina.objPopup.returnInhoudNaarSectie (objPagina.domActieveSectie);
-    		objPagina.objPopup.domPopup.classList.toggle ('fullscreen-active');
-    		document.exitFullscreen ();
-    	}
-    }
+          objPagina.objPopup.domPopup.requestFullscreen ().catch ((err) => {
+              console.log (`Error attempting to enable fullscreen mode: ${err.message} (${err.name})`);
+              return;
+          });
+  	}
+  	else {
+  		objPagina.objPopup.returnInhoudNaarSectie (objPagina.domActieveSectie);
+  		objPagina.objPopup.domPopup.classList.toggle ('fullscreen-active');
+  		document.exitFullscreen ();
+  	}
+  }
 
-    getResizeAction () {
-    	return this.domButton.onclick;
-    }
+  getResizeAction () {
+  	return this.domButton.onclick;
+  }
 
 	deactiveerButton () {
 		this.domButton.onclick = null;
@@ -1761,24 +1717,81 @@ class Popup {
 		return document.body.querySelectorAll ('div[id^=' + SECTIE + ']').length;
 	}
 
-    changeWidth (domSelect) {
-
-        var domRoot = document.querySelector (':root');
-        var domRootStyle = getComputedStyle (domRoot);
-        var strWidth = domSelect.value;
-        domRoot.style.setProperty ('--width-popup', strWidth);
-        strWidth = 'w' + strWidth;
-
-        if (strWidth.charAt (4) == '%') {
-        	strWidth = strWidth.substring (0, 4);
-        }
-
-        Cookie.set ('popup-width', strWidth);
-    }
-
-	fullscreenIsActief () {
-		return this.domPopup.classList.contains ('fullscreen-active');
+	get domSelect () {
+		return this.domPopup.querySelector ('.navigatie select');
 	}
+
+	setWidthOption (domSelect, strWidthID) {
+
+		var domOptionToBeSelected = domSelect.querySelector ('#' + strWidthID);
+
+    if (domOptionToBeSelected) {
+      domOptionToBeSelected.selected = 'true';
+    }
+	}
+
+  addWidthOption (width) {
+
+  	var strPX = width === '100%' ? '' : 'px';
+
+  	if (width === '100%' || (width < (screen.width - 100))) {
+  		var domOption = document.createElement ('option');
+  		domOption.id = 'w' + (width === '100%' ? '100' : width) + strPX;
+  		domOption.value = width + strPX;
+  		domOption.innerHTML = width + strPX;
+
+  		if (width === '100%') {
+  			domOption.selected = true;
+  		}
+
+  		return domOption;
+  	}
+
+  	return null;
+  }
+
+	addWidthOptions (domSelect) {
+		domSelect.innerHTML = '';
+		domSelect.append (this.addWidthOption ('100%'));
+		domSelect.append (this.addWidthOption (800));
+		domSelect.append (this.addWidthOption (1280));
+		domSelect.append (this.addWidthOption (1440));
+		domSelect.disabled = domSelect.childElementCount === 1;
+	}
+
+	getWidthID (strWidthValue) {
+
+		var strWidthID;
+
+		if (strWidthValue) {
+
+			let strHonderdProcent = '100%';
+			let intLengteVanHonderdProcent = strHonderdProcent.length;
+			strWidthID = 'w' + strWidthValue;
+
+			if (strWidthValue === strHonderdProcent) {
+				strWidthID = strWidthID.substring (0, intLengteVanHonderdProcent);
+			}
+		}
+		else {
+			strWidthID = Cookie.get ('popup-width');
+		}
+
+		return strWidthID ? strWidthID : 'w100';
+	}
+
+  changeWidth (domSelect, strWidthValue) {
+
+  	if (this.isActief ()) {
+  		var strWidthID = this.getWidthID (strWidthValue);
+	 		this.addWidthOptions (domSelect);
+    	var domRoot = document.querySelector (':root');
+    	var domRootStyle = getComputedStyle (domRoot);
+    	domRoot.style.setProperty ('--width-popup', strWidthValue);
+    	Cookie.set ('popup-width', strWidthID);
+  		this.setWidthOption (domSelect, strWidthID);
+    }
+  }
 
 	bevatNavigatieButtons () {
 		return this.domPopup.querySelector ('.navigatie-buttons');
@@ -1793,10 +1806,10 @@ class Popup {
 	toggleMoetWordenToegepast (blnFullscreenIsChecked) {
 
 		if (blnFullscreenIsChecked) {
-			return !this.fullscreenIsActief () && !this.bevatNavigatieButtons () && this.wordtGetoondInFullscreen ();
+			return !this.isActief () && !this.bevatNavigatieButtons () && this.wordtGetoondInFullscreen ();
 		}
 		else {
-			return this.fullscreenIsActief () && this.bevatNavigatieButtons () && !this.wordtGetoondInFullscreen ();
+			return this.isActief () && this.bevatNavigatieButtons () && !this.wordtGetoondInFullscreen ();
 		}
 	}
 
@@ -1890,63 +1903,49 @@ class Popup {
 		                                                        this.intNumberOfPages;
 	}
 
-    togglePopup () {
+	isActief () {
+		return this.domPopup.classList.contains ('fullscreen-active');
+	}
 
-    	if (this.toggleMoetWordenToegepast (true)) {
+  togglePopup () {
 
-    		if (!document.fullscreenElement && (window.innerWidth === screen.width) && (window.innerHeight === screen.height)) {
-    			this.blnIsActivatedByBrightspace = true;
-    		}
-    		else {
-    			this.blnIsActivatedByBrightspace = false;
-    		}
+  	if (this.toggleMoetWordenToegepast (true)) {
 
-    		this.activeerSectie (objPagina.domActieveSectie);
+  		if (!document.fullscreenElement && (window.innerWidth === screen.width) && (window.innerHeight === screen.height)) {
+  			this.blnIsActivatedByBrightspace = true;
+  		}
+  		else {
+  			this.blnIsActivatedByBrightspace = false;
+  		}
+
+  		this.activeerSectie (objPagina.domActieveSectie);
 			this.domPopup.classList.toggle ('fullscreen-active');
-    	}
-    	else if (this.toggleMoetWordenToegepast (false)) {
-    		this.returnInhoudNaarSectie (objPagina.domActieveSectie);
+			this.changeWidth (this.domSelect, this.domSelect.value);
+  	}
+  	else if (this.toggleMoetWordenToegepast (false)) {
+  		this.returnInhoudNaarSectie (objPagina.domActieveSectie);
 			this.domPopup.classList.toggle ('fullscreen-active');
-    	}
-    }
+  	}
+  }
 
-    addOption (width) {
+	getDOMWidthSpan () {
 
-    	var strPX = width === '100%' ? '' : 'px';
+		var objPopup = this;
 
-    	if (width === '100%' || (width < (screen.width - 100))) {
-    		var domOption = document.createElement ('option');
-    		domOption.id = 'w' + width + strPX;
-    		domOption.value = width + strPX;
-    		domOption.innerHTML = width + strPX;
+		var domWidthSpan = document.createElement ('span');
+		var domSelect = document.createElement ('select');
+		domSelect.title = 'width';
+		domSelect.id = 'width';
 
-    		if (width === '100%') {
-    			domOption.selected = true;
-    		}
-
-    		return domOption;
-    	}
-
-    	return null;
-    }
-
-	setWidthOptions (domSelect) {
-
-		if (!domSelect) {
-			domSelect = this.domPopup.querySelector ('select');
+		domSelect.onchange = function () {
+			objPopup.changeWidth (this, this.value);
 		}
 
-		domSelect.innerHTML = '';
-		domSelect.append (this.addOption ('100%'));
-		domSelect.append (this.addOption (800));
-		domSelect.append (this.addOption (1280));
-		domSelect.append (this.addOption (1440));
-		domSelect.disabled = domSelect.childElementCount === 1;
+		domWidthSpan.append (domSelect);
+    return domWidthSpan;
 	}
 
 	addPopup () {
-
-		var objPopup = this;
 
 		this.domPopup = document.createElement ('div');
 		this.domPopup.id = 'popup';
@@ -1966,29 +1965,8 @@ class Popup {
 
 		var domNavigatie = document.createElement ('div');
 		domNavigatie.classList.add ('navigatie');
+		domNavigatie.append (this.getDOMWidthSpan ());
 		this.domPopup.appendChild (domNavigatie);
-
-		var domWidthSpan = document.createElement ('span');
-
-		var domSelect = document.createElement ('select');
-		domSelect.title = 'width';
-		domSelect.id = 'width';
-
-		domSelect.onchange = function () {
-			objPopup.changeWidth (this);
-		}
-
-		this.setWidthOptions (domSelect);
-		domWidthSpan.append (domSelect);
-		domNavigatie.append (domWidthSpan);
-
-		var strWidthID = '#' + Cookie.get ('popup-width');
-        var domOptionToBeSelected = domNavigatie.querySelector (strWidthID);
-        this.changeWidth (domNavigatie.querySelector ('select'));
-
-        if (domOptionToBeSelected) {
-        	domOptionToBeSelected.selected = 'true';
-        }
 
 		var domCloseButton = document.createElement ('div');
 		domCloseButton.classList.add ('close-button');
@@ -1996,7 +1974,7 @@ class Popup {
 		domCloseCharacter.innerHTML = '&times;';
 		domCloseButton.appendChild (domCloseCharacter);
 		this.domPopup.appendChild (domCloseButton);
-    }
+  }
 
 	constructor () {
 
@@ -2006,12 +1984,8 @@ class Popup {
 
 		window.onresize = function () {
 			objPopup.togglePopup ();
-			objPopup.setWidthOptions ();
+			objPopup.changeWidth (objPopup.domSelect, objPopup.domSelect.value);
 		};
-	}
-
-	isActief () {
-		return this.domPopup.classList.contains ('fullscreen-active');
 	}
 }
 
