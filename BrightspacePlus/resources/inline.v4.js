@@ -3,6 +3,7 @@
  *
  * Video's, Wooclaps, PDF's en presentaties pas laden nadat alles is opgemaakt.
  * PPTX-viewer toevoegen.
+ * Waiting for toevoegen aan div voor PPTX.
  * Waiting for toevoegen aan div's.
  * Overstappen naar <pre> (zonder extra class) als kenmerk van de uitwerking van een opdracht.
  * Overstappen naar <div blended...>, <div faq...>, div etc.
@@ -26,15 +27,13 @@
  * Combinatie van Tags en Attributes implementeren en getElementsByTagName -> getElementsByName: zowel
    voor h2, h3 etc. als voor blended, faq etc.. Daarbij moeten ook class='blended-wrapper' nog worden
    meegenomen.
- - Breedte wordt wel opgehaald, maar de juiste breedte wordt nog niet in de combobox getoond.	
- - Overal consequent CONSTANTES gebruiken (zowel in HTML, in CSS, in Blended als in JavaScript)
+ * Breedte wordt wel opgehaald, maar de juiste breedte wordt nog niet in de combobox getoond.	
  * Inhoudsopgave gelijk maken aan div inhoudsopgave.
  * Lijst met filmpjes gelijk maken aan div video-list met een div.
  * Volgorde van het aanmaken controleren en dubbele loops killen waar mogelijk.
  * Is het aanmaken van de links op de juiste plek opgenomen?
  * Aanmaken titels voor het creëren van paragraafnummers.
  * PDF-viewer toggable maken.
- - PDF-viewer op 100% laten openen.
  * PDF en Cheat Sheet in structuur onderbrengen.
  * Student kan voor de paragrafen kiezen voor 1 tegelijk open of alles tegelijk open met een toggle-bar geleend
    van BrightSpace.
@@ -45,7 +44,8 @@
    uitwerking van een opdracht, download-box, FAQ, PPTX en PDF.
  - Opruimen code-smells.
  - Opruimen oude code die overbodig is geworden.
- * Waiting for toevoegen aan div voor PPTX.
+ - Overal consequent CONSTANTES gebruiken (zowel in HTML, in CSS, in Blended als in JavaScript)
+ - PDF-viewer op 100% laten openen.
  */
 
 // /////////////////////////////////////////////////////////////////////////// //
