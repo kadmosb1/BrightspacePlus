@@ -1600,11 +1600,16 @@ class Pagina {
 		var strTag = 'text';
 		var domElement = document.body.firstChild;
 
+		while (this.kanWordenGenegeerd (domElement)) {
+			domElement.remove ();
+			domElement = document.body.firstChild;
+		}
+
 		if (domElement.nodeName !== '#text') {
 			strTag = document.body.firstElementChild.tagName.toLowerCase ();
 		}
 
-		if (!'h2,h3,h4'.includes (strTag) && (this.arrSecties.length == 0) && !this.kanWordenGenegeerd (domElement)) {
+		if (!'h2,h3,h4'.includes (strTag) && (this.arrSecties.length == 0)) {
 			this.arrSecties.push (new Sectie (this));
 		}
 
@@ -3857,6 +3862,11 @@ class BlendedElements {
 class Inhoudsopgave extends Blended {
 
 	get intNiveau () {
+
+		if (!this._intNiveau) {
+			this._intNiveau = 3;
+		}
+
 		return this._intNiveau;
 	}
 
@@ -3878,10 +3888,9 @@ class Inhoudsopgave extends Blended {
 
 		if (domInhoudsopgave) {
 			this.tblInhoud = this.domBlendedElement.getElementsByClassName ('tabel-inhoud') [0];
+			this.intNiveau = 3 // default level;
+			this.domBlendedElement.querySelector ('table').classList.add ('niveau' + this.intNiveau);
 		}
-
-		this.intNiveau = 3 // default level;
-		this.domBlendedElement.querySelector ('table').classList.add ('niveau' + this.intNiveau);
 	}
 
 	getInvisibleContent () {
