@@ -33,7 +33,6 @@
          */
         if (typeof getImageURL === 'function') {
             document.getElementById ('JS_CSS').setAttribute ('src', getImageURL ('onderhoud/Onderhoud - JS en CSS.jpg'));
-            document.getElementById ('Plaatjes').setAttribute ('src', getImageURL ('onderhoud/Onderhoud - Plaatjes bij onderhoudspagina.jpg'));
             document.getElementById ('Source').setAttribute ('src', getImageURL ('onderhoud/Onderhoud - Source Code.jpg'));
             document.getElementById ('Contents').setAttribute ('src', getImageURL ('onderhoud/Onderhoud - Contents media.jpg'));
         }
@@ -70,22 +69,18 @@ Op een willekeurige plaats in het document kun je een inhoudsopgave toevoegen:
 <p>De gekleurde 'wrappers' (met bijv. vids en code; zoals hieronder gebruikt) op de pagina worden opgebouwd m.b.v. JavaScript. Dit programma gaat ervan uit dat er een aantal files zijn toegevoegd aan specifieke directories.</p>
 
 
-<h4>De plaatjes</h3>
-<p>Het gaat om de plaatjes in de directory 'media' in Github: <a href="https://github.com/kadmosb1/BrightspacePlus">https://github.com/kadmosb1/BrightspacePlus</a>:
+<h4>De plaatjes</h4>
+<p>Het gaat om de plaatjes in de directory 'media' in Github: <a href="https://github.com/kadmosb1/BrightspacePlus/tree/main/media">https://github.com/kadmosb1/BrightspacePlus/tree/main/media</a>:
 <div class="blended-kader"><img id="Contents" alt="Inhoud van de directory 'media'" title="Inhoud van de directory 'media'" style="max-width: 100%;"></div>
 
 
-<h3>De files voor JavaScript en CSS</h3>
-<p>De content van de wrappers (met bijv. vids en uitwerkingen) wordt toegevoegd m.b.v. JavaScript. De opmaak van de wrappers is vastgelegd in een CSS-file. De wrappers worden alleen gevuld met content, als de files voor JavaScript (<span style="font-family: Consolas;">inline.v2.js</span>) en CSS (<span style="font-family: Consolas;">brightspace.css</span>) zijn toegevoegd aan directory 'resources':</p>
+<h4>De files voor JavaScript en CSS</h4>
+<p>De content van de wrappers (met bijv. vids en uitwerkingen) wordt toegevoegd m.b.v. JavaScript. De opmaak van de wrappers is vastgelegd in een CSS-file. De wrappers worden alleen gevuld met content, als de files voor JavaScript (<span style="font-family: Consolas;">inline.v4.js</span>) en CSS (<span style="font-family: Consolas;">brightspace.v4.css</span>) vanuit <a href="https://github.com/kadmosb1/BrightspacePlus/tree/main/resources">https://github.com/kadmosb1/BrightspacePlus/tree/main/resources</a> zijn toegevoegd aan directory 'resources':</p>
 <div class="blended-kader"><img id="JS_CSS" alt="JS- en CSS-files" title="JS- en CSS-files" style="max-width: 100%;"></div>
 
+<h4>Diversen</h4>
+<p>Zorg tenslotte dat de inhoud van de directories <a href="https://github.com/kadmosb1/BrightspacePlus/tree/main/documenten">https://github.com/kadmosb1/BrightspacePlus/tree/main/documenten</a> en <a href="https://github.com/kadmosb1/BrightspacePlus/tree/main/presentaties">https://github.com/kadmosb1/BrightspacePlus/tree/main/presentaties</a> als subdirectories worden gekopieerd naar de directory media in BrightSpace.</p>
 
-<h3>De plaatjes op deze pagina</h3>
-<p>Het is belangrijk dat deze instructiepagina voor het onderhoud van de BrightSpace-pagina's mee wordt gekopieerd naar een nieuwe site. Daarvoor moeten ook de plaatjes mee die op de huidige pagina worden getoond. Kopieer daarvoor de gehele directory 'media/onderhoud' met inhoud mee naar de nieuwe site:</p>
-<div class="blended-kader"><img id="Plaatjes" alt="Plaatjes bij onderhoudspagina" title="Plaatjes bij onderhoudspagina" style="max-width: 100%;"></div>
-
-
-<h2 type="instructie" navigatie="yes">Activeren van de JavaScript</h2>
 <h3>Het toevoegen van de CSS</h3>
 <p>Naar de CSS hoef je niet om te kijken. Als je hieronder de JavaScript toevoegt op de pagina, wordt vanuit de JavaScript de juiste CSS-file geladen.</p>
 
@@ -485,7 +480,7 @@ voor de link geplakt).</li>
 <p>Om een PPTX vanuit OneDrive for Business toe te voegen op je pagina, gebruik je de volgende code:</p>
 <pre class="blended-code">&lt;div account="kjvdlelij_hhs_nl" pptx-id="b9c05657-f1ad-4d68-9fdd-b01e6a3d29a6"&gt;&lt;/div&gt;</pre>
 <p>Om een PPTX vanuit SharePoint of Teams toe te voegen op je pagina, gebruik je de volgende code:</p>
-<pre class="blended-code">&lt;div site="SE2-2021-2022_groups" pptx-id="703c7cf7-3ce7-4f57-bee9-b2def3aa70c3"&gt;&lt;/div&gt;</pre>
+<pre class="blended-code">&lt;div site="AgileOOProgrammingSemesterSE-S2_groups-Docenten" pptx-id="34c09546-2159-4bd6-82a5-f73bd68cd84f"&gt;&lt;/div&gt;</pre>
 <p>De presentaties worden binnen BrightSpace getoond door OneDrive, SharePoint of Teams. De gebruikte attributen hebben de volgende betekenis:</p>
 <ul>
 <li><span style="font-family: Consolas;">account</span>: Het account dat in de link wordt gebruikt om in OneDrive te kunnen verwijzen naar de juiste directory (zoals in <a href="https://dehaagsehogeschool-my.sharepoint.com/personal/kjvdlelij_hhs_nl/_layouts/15/Doc.aspx?sourcedoc={b9c05657-f1ad-4d68-9fdd-b01e6a3d29a6}">https://dehaagsehogeschool-my.sharepoint.com/personal/<span class="melding">kjvdlelij_hhs_nl</span>/_layouts/15/Doc.aspx?sourcedoc={b9c05657-f1ad-4d68-9fdd-b01e6a3d29a6}&amp;action=embedview&amp;wdAr=1.7777777777777777</a>).</li>
@@ -502,7 +497,7 @@ voor de link geplakt).</li>
     <h4>Presentatie in OneDrive for Business</h4>
     <div account="kjvdlelij_hhs_nl" pptx-id="b9c05657-f1ad-4d68-9fdd-b01e6a3d29a6"></div>
     <h4>Presentatie in Teams (identiek aan een presentatie in SharePoint)</h4>
-    <div site="SE2-2021-2022_groups" pptx-id="703c7cf7-3ce7-4f57-bee9-b2def3aa70c3"></div>
+    <div site="AgileOOProgrammingSemesterSE-S2_groups-Docenten" pptx-id="34c09546-2159-4bd6-82a5-f73bd68cd84f"></div>
 </div>
 
 <h3 navigatie="yes">Het opnemen van een verschuivend weekschema</h3>
