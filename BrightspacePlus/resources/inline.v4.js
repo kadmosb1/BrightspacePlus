@@ -87,6 +87,7 @@ const UITWERKING = 'uitwerking';
 const QUIZ = 'quiz';
 const WOOCLAP = 'wooclap';
 const WOOFLASH = 'wooflash';
+const WOOFLASH_C = 'wooflash-complete'
 const PROEFTOETS = 'proeftoets';
 const QUIZVRAAG = 'wooclap-vraag';
 const DOWNLOAD = 'download';
@@ -111,7 +112,7 @@ const STREAM_BASE_EMBED = 'https://web.microsoftstream.com/embed/video/%id';
 const YOUTUBE_BASE_URL = 'https://www.youtube.com/watch?v=%id';
 const YOUTUBE_BASE_EMBED = 'https://www.youtube.com/embed/%id';
 const WOOCLAP_BASE_EMBED = 'https://app.wooclap.com/%link';
-const WOOFLASH_BASE_EMBED = 'https://app.wooflash.com/study/%id';
+const WOOFLASH_BASE_EMBED = 'https://app.wooflash.com/join/%id';
 const ONEDRIVE_BASE_URL = 'https://dehaagsehogeschool-my.sharepoint.com/personal/%account/_layouts/15/Doc.aspx?sourcedoc={%id}';
 const ONEDRIVE_BASE_EMBED = ONEDRIVE_BASE_URL + '&amp;action=embedview&amp;wdAr=1.7777777777777777';
 const TEAMS_OF_SP_BASE_URL = 'https://dehaagsehogeschool.sharepoint.com/sites/%site/_layouts/15/Doc.aspx?sourcedoc={%id}';
@@ -211,6 +212,7 @@ window.onload = function (event) {
 	objPagina.addSecties ();
 	objPagina.updateLinks ();
 	objPagina.embedContent ();
+	new Weekschema ();
 	// toonAlleEventsInTabel ();
 };
 
@@ -487,8 +489,16 @@ class Studietijd {
 		}
 	}
 
-	getRegel (strClass, strEenheid, intStudietijd) {
-		return '<span class="' + strClass + '">Studietijd voor de toetsstof ' + strEenheid + ': ' +
+	getRegel (strClass, strEenheid, intStudietijd, typeStof) {
+
+		if (typeStof === 'totaal') {
+			typeStof = 'totale studietijd (incl. extra stof)'
+		}
+		else {
+			typeStof = 'Studietijd voor de ' + typeStof;
+		}
+
+		return '<span class="' + strClass + '">' + typeStof + ' ' + strEenheid + ': ' +
 			       Studietijd.getGeschrevenTijd (intStudietijd) +
 			   '</span>';
 	}
@@ -507,15 +517,15 @@ class Studietijd {
 		}
 
 		if (blnHasToetstijd) {
-			strStudietijdTekst += this.getRegel ('toetsMateriaal', strEenheid, intToetstijd);
+			strStudietijdTekst += this.getRegel ('toetsMateriaal', strEenheid, intToetstijd, 'toetsstof');
 		}
 
 		if (blnHasExtraTijd) {
-			strStudietijdTekst += (blnHasToetstijd ? '<br>' : '') + this.getRegel ('extraMateriaal', strEenheid, intExtraTijd);
+			strStudietijdTekst += (blnHasToetstijd ? '<br>' : '') + this.getRegel ('extraMateriaal', strEenheid, intExtraTijd, 'extra stof (facultatief)');
 		}
 
 		if (blnHasToetstijd && blnHasExtraTijd) {
-			strStudietijdTekst += '<br>' + this.getRegel ('extraMateriaal', strEenheid, intToetstijd + intExtraTijd);
+			strStudietijdTekst += '<br>' + this.getRegel ('extraMateriaal', strEenheid, intToetstijd + intExtraTijd, 'totaal');
 		}
 
 		return strStudietijdTekst;
@@ -1074,7 +1084,7 @@ class ResizeButton {
 		this.domSectie = this.objNavigatie.objSectie.domSectie
 
 		if (!this.getResizeAction ()) {
-			this.objLink = new Link (this.domButton, this.domSectie, this.toggleFullscreen);
+			this.objLink = new Link (this.domButton, "", "", this.domSectie, this.toggleFullscreen);
 			this.activeerButton ();
 		}
 	}
@@ -1106,7 +1116,7 @@ class Navigatie {
 		var objNavigatie = this;
 
 		if (objSectie) {
-			var objLink = new Link (domSpan, objSectie.domSectie);
+			var objLink = new Link (domSpan, "", "", objSectie.domSectie);
 			domSpan.classList.add ('navigatie-active');
 
 			let intIndex = -1;
@@ -1419,10 +1429,23 @@ class Link {
 		};
 	}
 
-	constructor (domLink, domSectie, fnExtraClickFunctie) {
+	static getDate (dateString) {
+
+		if (dateString) {
+			dateString = dateString.replaceAll ('\\', '-');
+			return new Date (dateString);
+		}
+		else {
+			return '';
+		}
+	}
+
+	constructor (domLink, start, finish, domSectie, fnExtraClickFunctie) {
 
 		this.domLink = domLink;
 		this.strHREF = domLink.getAttribute ('href');
+		this.start = Link.getDate (start);
+		this.finish = Link.getDate (finish);
 
 		if (!this.strHREF) {
 
@@ -1442,7 +1465,26 @@ class Link {
 
 		this.domSectie = domSectie;
 		this.fnExtraClickFunctie = fnExtraClickFunctie;
-		Link.arrLinks.push (this);
+
+		var vandaag = new Date ();
+
+		/*
+		 * 24-01-2024: Als de link actief is (vandaag ligt tussen start en finish of start en/of finish
+		 *             zijn niet gedefinieerd), dan wordt de link toegevoegd aan de lijst met links (die
+		 *             later wordt verrijkt met opmaak en attributen). Als de link niet actief mag
+		 *             zijn (want vandaag valt niet binnen de grenzen van start en finish), dan wordt
+		 *             de link verwijderd (en wordt de link dus ook niet toegevoegd aan de lijst met links).
+		 */
+		if (((this.start === '') || (vandaag >= this.start))
+		    &&
+		    ((this.finish === '') || (vandaag <= this.finish))) {
+			Link.arrLinks.push (this);
+		}
+		else {
+			var newNode = document.createElement ("span");
+			newNode.innerHTML = domLink.innerHTML;
+			domLink.parentNode.replaceChild (newNode, domLink);
+		}
 
 		if (domSectie) {
 			this.activeer ();
@@ -1508,6 +1550,10 @@ class Pagina {
 
 	analyseerElement (domElement, objParagraaf) {
 
+		if (this.kanWordenGenegeerd (domElement)) {
+			return;
+		}
+
 		var strTag = domElement.tagName.toLowerCase ();
 
 		switch (strTag) {
@@ -1532,14 +1578,24 @@ class Pagina {
 
 				if (Link.isALink (domElement)) {
 					var domSectie = this.arrSecties [this.arrSecties.length - 1].domSectie;
-					Link.arrLinks.push (new Link (domElement));
+					
+					/*
+					 * Start en finish zijn bedoeld om te bepalen of een link actief (binnen de grenzen van start/finish) of 
+					 * zonder link (buiten de grenzen van start/finish) moet worden getoond.
+					 */
+					var start = domElement.getAttribute ("start");
+					var finish = domElement.getAttribute ("finish");
+
+					new Link (domElement, start, finish);
 				}
 
 				break;
 
 			case 'pre':
 
-				if (domElement.getAttributeNames ().length === 0) {
+				if (((domElement.getAttributeNames ().length === 1) && (domElement.getAttribute ('title') !== null))
+			        ||
+				    (domElement.getAttributeNames ().length === 0)) {
 					domElement.setAttribute (UITWERKING, 'toggle');
 				}
 
@@ -1549,6 +1605,12 @@ class Pagina {
 					this.updateNavigatieGebaseerdOpInhoudsopgave (this.arrSecties [this.arrSecties.length - 1]);
 				}
 				else {
+
+					if (domElement.classList && domElement.classList.contains ('blended-' + UITWERKING)) {
+						domElement.classList.remove ('blended-' + UITWERKING);
+						domElement.setAttribute (UITWERKING, 'toggle');
+					}
+
 					this.objBlendedElements.addElement (domElement);
 				}
 
@@ -1605,7 +1667,7 @@ class Pagina {
 			domElement = document.body.firstChild;
 		}
 
-		if (domElement.nodeName !== '#text') {
+		if ((domElement.nodeName !== '#text') && (domElement.nodeName !== '#comment')) {
 			strTag = document.body.firstElementChild.tagName.toLowerCase ();
 		}
 
@@ -1615,7 +1677,7 @@ class Pagina {
 
 		while (domElement && !this.isSectieOfPopup (domElement)) {
 
-			if (domElement.nodeName !== '#text') {
+			if ((domElement.nodeName !== '#text') && (domElement.nodeName !== '#comment')) {
 
 				var strNavigatie = domElement.getAttribute ('navigatie');
 				strTag = domElement.tagName.toLowerCase ();
@@ -3815,6 +3877,19 @@ class BlendedElements {
 			switch (strNaam.toLowerCase ()) {
 
 				case PDF: objBlended = new PDFDocument (domBlended); break;
+    			case WOOCLAP + '-dir':
+    			case WOOFLASH + '-id':
+				case WOOFLASH + '-complete':
+
+    				if (!domBlended.classList.contains ('quiz-wrapper')) {
+
+    					switch (domBlended.getAttribute ('type')) {
+    						case QUIZVRAAG: objBlended = new Quizvraag (domBlended); break;
+    						default: objBlended = new Proeftoets (domBlended); break;
+    					}
+    				}
+
+    				break;
     			case 'werkvorm': new FAQLijst (domBlended); break;
     			case MEDIASITE + '-id': objBlended = new MediaSite (domBlended); break;
         		case STREAM + '-id': objBlended = new MSStream (domBlended); break;
@@ -3831,19 +3906,6 @@ class BlendedElements {
 					}
 
 					break;
-
-    			case WOOCLAP + '-dir':
-    			case WOOFLASH + '-id':
-
-    				if (!domBlended.classList.contains ('quiz-wrapper')) {
-
-    					switch (domBlended.getAttribute ('type')) {
-    						case QUIZVRAAG: objBlended = new Quizvraag (domBlended); break;
-    						default: objBlended = new Proeftoets (domBlended); break;
-    					}
-    				}
-
-    				break;
 
     			case UITWERKING:
     				new Uitwerking (domBlended);
@@ -3949,9 +4011,14 @@ class Inhoudsopgave extends Blended {
 				domA.innerHTML = (strParagraaf == 'no' ? "klik" : strParagraaf)
 				var trRegel = this.tblInhoud.insertRow (-1);
 				trRegel.classList.add ('niveau' + strTag.charAt (1));
-				new Link (domA, domSectie);
+				new Link (domA, "", "", domSectie);
 				trRegel.insertCell (0).append (domA);
 				tdTitle = trRegel.insertCell (1);
+
+				if (strTitle.includes (strParagraaf + ' - ')) {
+					strTitle = strTitle.substring ((strParagraaf + ' - ').length);
+				}
+
 				tdTitle.innerHTML = strTitle;
 			}
 		}
@@ -4045,7 +4112,7 @@ class PDFDocument extends Blended {
 	constructor (domPDFDocument) {
 
 		var strLink = domPDFDocument.getAttribute (PDF);
-		var strDocument = 'documenten/OPT3 - Code Smell Cheat Sheet.pdf';
+		var strDocument = 'documenten/OPT3 13.2 - Cheat Sheet Code Smells.pdf';
 
 		/*
 		 * Als de cheat sheet voor code-smells als documentnaam is opgegeven,
@@ -4810,7 +4877,14 @@ class Wooflash extends Quiz {
 
 	constructor (domWooflash, strTekst) {
 		domWooflash.classList.add (WOOFLASH + '-wrapper');
-		var strEmbed = Placeholder.replacePlaceholderInTekst (WOOFLASH_BASE_EMBED, '%id', domWooflash.getAttribute (WOOFLASH + '-id'));
+
+		var strAttribute = domWooflash.getAttribute (WOOFLASH + '-id');
+
+		if (!strAttribute) {
+			strAttribute = domWooflash.getAttribute (WOOFLASH + '-complete');
+		}
+
+		var strEmbed = Placeholder.replacePlaceholderInTekst (WOOFLASH_BASE_EMBED, '%id', strAttribute);
 		strTekst += ' (het nadeel van Wooflash is wel dat je hiervoor alleen in kunt loggen met een account dat je ' + 
 		            'aanmaakt bij Wooflash en dat je dit account dus niet kunt gebruiken voor bijv. Wooclap).';
 		super (domWooflash, 'deze proeftoets', strEmbed, strTekst);
@@ -4832,7 +4906,13 @@ class Wooclap extends Quiz {
 class Quizvraag extends Wooclap {
 
 	constructor (domVraag) {
-		var strTekst = 'Zou je nu nog een paar vragen willen beantwoorden? Ik gebruik jullie antwoorden bij de voorbereiding van het hoorcollege';
+
+		var strTekst = domVraag.getAttribute ('tekst');
+
+		if (!strTekst) {
+			strTekst = 'Zou je nu nog een paar vragen willen beantwoorden? Ik gebruik jullie antwoorden bij de voorbereiding van het hoorcollege';
+		}
+		
 		super (domVraag, QUIZVRAAG, strTekst);
 	}
 }
@@ -4850,18 +4930,28 @@ class Proeftoets {
 
 	constructor (domProeftoets) {
 
-		var strTekst = 'Tijdens het hoorcollege liepen we samen door een proeftoets heen die helpt om actief met de stof bezig te zijn. ' +
-			      	   'Na afloop van het hoorcollege kun je deze proeftoets hieronder opnieuw doorlopen.';
+		var domWooclap = domProeftoets;
+		var domWooflash = domProeftoets;
+
+		var strWerkvorm = domProeftoets.getAttribute (WOOCLAP + '-werkvorm');
+
+		if (strWerkvorm === "") {
+			strWerkvorm = "het hoorcollege";
+		}
+
+		var strTekstCompleteWooflash = 'In onderstaande proeftoets zijn alle vragen verzameld die tijdens de hoorcolleges zijn doorlopen. ' +
+		                               'Als je deze proeftoets meerdere keren doorloopt, krijg je steeds een goede indruk of je klaar bent voor de toets ';
+		var strTekst = 'Tijdens ' + strWerkvorm + ' liepen we samen door een proeftoets heen die helpt om actief met de stof bezig te zijn. ' +
+			      	   'Na afloop van ' + strWerkvorm + ' kun je deze proeftoets hieronder opnieuw doorlopen.';
 		var strTekstEnkelvoudig = strTekst + '<br><br>Daarvoor is een %type beschikbaar %beschrijving';
 		var strWooclapTekst = strTekstEnkelvoudig;
 		var strWooflashTekst = 'Het voordeel van een Wooflash-quiz t.o.v. een Wooclap is dat je een Wooflash meerdere keren kunt doorlopen en ' +
 		     			   'dat je tussentijds een indicatie krijgt in hoeverre je na het doorlopen van de vragen klaar bent voor een ' +
 		     			   'toets over deze stof'
-		var domWooclap = domProeftoets;
-		var domWooflash = domProeftoets;
 
 		var strWooclapDir = domProeftoets.getAttribute (WOOCLAP + '-dir');
 		var strWooflashID = domProeftoets.getAttribute (WOOFLASH + '-id');
+		var strWooflashComplete = domProeftoets.getAttribute (WOOFLASH + '-complete');
 
 		if (strWooclapDir) {
 
@@ -4878,7 +4968,10 @@ class Proeftoets {
 				strWooclapTekst = strTekst + '<br><br>Hiervoor wordt gebruik gemaakt van een Wooclap-quiz';
 			}
 		}
-		else {
+		else if (strWooflashComplete) {
+			strWooflashTekst = strTekstCompleteWooflash;
+		}
+		else {	
 			strWooflashTekst = strTekst + '<br><br>Hiervoor wordt gebruik gemaakt van een Wooflash-quiz. ' + strWooflashTekst;
 		}
 
@@ -4886,7 +4979,7 @@ class Proeftoets {
 			this.arrProeftoetsen.push (new Wooclap (domWooclap, PROEFTOETS, strWooclapTekst));
 		}
 
-		if (strWooflashID) { 
+		if (strWooflashID || strWooflashComplete) { 
 			this.arrProeftoetsen.push (new Wooflash (domWooflash, strWooflashTekst));
 		}
 	}
@@ -4903,17 +4996,21 @@ class Proeftoets {
 
 class Uitwerking extends Blended {
 
-	constructor (preUitwerking) {
-		var domUitwerking = document.createElement ('div');
-		super (domUitwerking, UITWERKING);
-		preUitwerking.parentNode.insertBefore (domUitwerking, preUitwerking);
-		var domBlendedContent = this.domBlendedElement.querySelector ('.blended-content');
-		var domPre = domBlendedContent.querySelector ('pre');
-		domBlendedContent.replaceChild (preUitwerking, domPre);
+	constructor (elmToggableUitwerking) {
 
-		// super (domUitwerking, UITWERKING) //, '<span id="dom-' + UITWERKING + '"></span>');
-		// document.getElementById ('dom-' + UITWERKING).outerHTML = 
-		//			Placeholder.replacePlaceholdersInTitle ('de uitwerking van %t %p', '', this.strParagraph);
+		var domUitwerking = document.createElement ('div');
+
+		if (elmToggableUitwerking.getAttribute ('title')) {
+			domUitwerking.setAttribute ('title', elmToggableUitwerking.getAttribute ('title'));
+		}
+
+		super (domUitwerking, UITWERKING);
+		elmToggableUitwerking.parentNode.insertBefore (domUitwerking, elmToggableUitwerking);;
+		var domBlendedContent = this.domBlendedElement.querySelector ('.blended-content');
+
+		var strTagName = ((this.domBlendedElement.tagName.toLowerCase () === 'div') ? 'div' : 'pre');
+		var domToggableContent = domBlendedContent.querySelector (strTagName);
+		domBlendedContent.replaceChild (elmToggableUitwerking, domToggableContent);
 	}
 
 	addURLForNewTab () {}
@@ -4921,7 +5018,13 @@ class Uitwerking extends Blended {
 	embedContent () {}
 
 	getInvisibleContent () {
-		return '<pre></pre>';
+
+		if (this.domBlendedElement.tagName.toLowerCase () === 'div') {
+			return '<div></div>';
+		}
+		else {
+			return '<pre></pre>';
+		}
 	}
 
 	getIconHTML () {
@@ -4930,3 +5033,102 @@ class Uitwerking extends Blended {
 }
 
 // /////////////////////////////////////////////////////////////////////////// //
+
+class WeekschemaItem {
+
+	get blnIsActive () {
+		return this.domWeekschemaItem.classList.contains ('weekschema-active');
+	}
+
+	toggleActiviteit (domElement) {
+		domElement.classList.toggle ('weekschema-active');
+	}
+
+	set blnIsActive (blnActive) {
+
+		if (blnActive != this.blnIsActive) {
+
+			var activeRow = this.domWeekschemaItem;
+
+			while (activeRow && !activeRow.classList.contains ('lege-regel')) {
+				this.toggleActiviteit (activeRow);
+				activeRow = activeRow.parentNode.rows [activeRow.rowIndex + 1];
+			}
+
+		}
+	}
+
+	toggleItem () {
+		this.blnIsActive = !this.blnIsActive;
+	}
+
+	constructor (domWeekschemaItem) {
+
+		var objWeekschemaItem = this;
+
+		this.domWeekschemaItem = domWeekschemaItem;
+		var start = domWeekschemaItem.getAttribute ('start');
+
+		if (start) {
+			start = new Date (start);
+		}
+
+		var finish = domWeekschemaItem.getAttribute ('finish');
+
+		if (finish) {
+			finish = new Date (finish);
+		}
+		
+		var vandaag = new Date ();
+		vandaag.setHours (0, 0, 0, 0);
+
+		if (!start && !finish) {
+			this.toggleItem ();
+		}
+		else if (!start) {
+			if (vandaag <= finish) {
+				this.toggleItem ();
+			}
+		}
+		else if (!finish) {
+			if (vandaag >= start) {
+				this.toggleItem ();
+			}
+		}
+		else if ((vandaag >= start) && (vandaag <= finish)) {
+			this.toggleItem ();
+		}
+
+	  this.domWeekschemaItem.addEventListener ('click', function ()  {
+	  	objWeekschemaItem.toggleItem ();
+	  });
+
+		/*
+		this.domVraagEnAntwoord.classList.add ('faq-element');
+
+		var arrVraagEnAntwoord = this.domVraagEnAntwoord.children;
+
+		this.domVraag = arrVraagEnAntwoord [0];
+		this.domVraag.classList.add ('faq-vraag');
+
+
+		this.domHR = document.createElement ('hr');
+		this.domVraag.parentNode.insertBefore (this.domHR, this.domVraag.nextSibling);
+
+		this.domAntwoord = arrVraagEnAntwoord [2];
+		this.domAntwoord.classList.add ('faq-antwoord');
+		*/
+	}
+}
+
+class Weekschema {
+
+	constructor () {
+
+		const arrWeekschemaItems = document.querySelectorAll (".week-header");
+
+		for (const domWeekschemaItem of arrWeekschemaItems) {
+			new WeekschemaItem (domWeekschemaItem);
+		}
+	}
+}

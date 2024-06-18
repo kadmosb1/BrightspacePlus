@@ -7,11 +7,11 @@ body, p, li {
     color: #494c4e; 
 }
 
-h2, h3, h4, .faq-vraag, .pagina-nummering {
+h2, h3, h4, h5, .faq-vraag, .pagina-nummering {
     color: #9ea700;
 }
 
-h2, h3, h4 {
+h2, h3, h4, h5 {
     border-top: #494c4e 3px solid;
 }
 
@@ -20,7 +20,7 @@ h2 {
     padding-top: 16px;
 }
 
-h3, h4 {
+h3, h4, h5 {
     padding: 16px 0px;
     border-bottom: #494c4e 1px solid;
 }
@@ -31,6 +31,10 @@ h3 {
 
 h4 {
     font-size: 16px;
+}
+
+h5 {
+    font-size: 14px;
 }
 
 a {
@@ -88,7 +92,7 @@ footer {
     color: #ca433c;
 }
 
-.leervragen li {
+.leervragen, .leervragen li {
     color: #ca433c /* #7c8200 */;
 }
 
@@ -232,16 +236,6 @@ footer {
     margin-top: 50px;
 }
 
-.uitwerking-wrapper {
-    color: white;
-    background-color: #9ea700;
-    margin-top: 16px;
-}
-
-.uitwerking -wrapper pre {
-    margin-top: 0px;
-}
-
 .download-wrapper, 
 .download-wrapper .videoLink, 
 .pptx-wrapper, 
@@ -298,15 +292,36 @@ footer {
     top: 0px;
 }
 
+.uitwerking-wrapper {
+    margin-top: 16px;
+}
+
+.uitwerking-wrapper, .uitwerking-wrapper * {
+    color: white;
+    background-color: #9ea700;
+}
+
+.uitwerking-wrapper * {
+    border-color: white;
+}
+
+.uitwerking-wrapper pre, .uitwerking-wrapper div {
+    margin-top: 0px;
+}
+
 .blended-code, .blended-kader, .blended-tijd, .blended-navigatie, .test-setup {
     padding: 16px 25px;
     border: 1px solid #3b4559;
     background-color: #f4f7fa;
-    color: #4e5b73;
+    /* color: #4e5b73; */
 }
 
-.blended-code {
+.blended-code, .blended-code-inline {
     font-family: Consolas;
+}
+
+.blended-code-inline {
+    background-color: #d9d9d9;
 }
 
 .blended-tijd, .blended-navigatie {
@@ -752,4 +767,83 @@ footer {
     /* 25%  {bottom: calc(100vh - 300px)} */
     /* 75%  {top: 260px} */
     100% {widt: 35px; height: 35px;top: 60px}
+}
+
+#weekschema {
+    border-collapse: collapse;
+    width: 100%;
+    border-spacing: 5px;
+}
+
+#weekschema tr {
+    vertical-align: top;
+}
+
+#weekschema th, #weekschema td {
+    border: 1px solid #b2c6d8;
+    padding: 5px;
+}
+
+#weekschema tr.weekschema-content {
+    display: none;
+}
+
+#weekschema tr.weekschema-content.weekschema-active {
+    display: table-row;
+}
+
+#weekschema .geen-activiteit {
+     background-color: rgb(178, 198, 216);
+}
+
+#weekschema .afwijking {
+    background-color: #00b2cd;
+    color: white;
+}
+
+#weekschema .vrij {
+     background-color: rgb(158, 167, 0); 
+     color: white;
+}
+
+#weekschema .lege-regel td {
+    border-left: 0px solid;
+    border-right: 0px solid;
+}
+
+#weekschema .week-header, .week-header-visible {
+    background-color: rgb(202, 67, 60);
+    outline: none;
+    transition: 0.4s;
+    margin: auto;
+    font-weight: bold;
+    position: relative;
+}
+
+#weekschema .week-header {
+    cursor: pointer;
+}
+
+#weekschema .week-header td, .week-header-visible td {
+    font-size: 15px; 
+    color: white;
+    font-weight: bold;
+    padding-left: 28px !important;
+}
+
+#weekschema .week-header td::before {
+    content: '\02795'; /* Unicode character for "plus" sign (+) */
+    font-size: 13px;
+    width: 10px;
+    color: rgb(178, 198, 216);
+    float: left;
+    margin-left: 2px;
+    vertical-align: middle;
+    position: absolute;
+    left: 5px;
+    transform: translate(0px, -2px);
+}
+
+#weekschema .week-header.weekschema-active td::before {
+    content: "\2796"; /* Unicode character for "minus" sign (-) */
 }

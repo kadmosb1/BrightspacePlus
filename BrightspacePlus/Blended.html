@@ -32,10 +32,10 @@
          * De plaatjes worden vanuit de juiste directory (met de aanroep van getImageURL) opgehaald.
          */
         if (typeof getImageURL === 'function') {
-            document.getElementById ('Icons').setAttribute ('src', getImageURL ('onderhoud/Onderhoud - Icons.jpg'));
             document.getElementById ('JS_CSS').setAttribute ('src', getImageURL ('onderhoud/Onderhoud - JS en CSS.jpg'));
             document.getElementById ('Plaatjes').setAttribute ('src', getImageURL ('onderhoud/Onderhoud - Plaatjes bij onderhoudspagina.jpg'));
             document.getElementById ('Source').setAttribute ('src', getImageURL ('onderhoud/Onderhoud - Source Code.jpg'));
+            document.getElementById ('Contents').setAttribute ('src', getImageURL ('onderhoud/Onderhoud - Contents media.jpg'));
         }
     }
 
@@ -43,8 +43,6 @@
 
 </head>
 <body>
-
-
 <h2>Instelling voor testen</h2>
 <div class="test-instellingen"></div>
 <h2 navigatie="yes" style="border-bottom: #494c4e 1px solid; padding-bottom: 16px;" type="instructie">Hoe voeg ik een inhoudsopgave toe aan een pagina?</h2>
@@ -72,22 +70,9 @@ Op een willekeurige plaats in het document kun je een inhoudsopgave toevoegen:
 <p>De gekleurde 'wrappers' (met bijv. vids en code; zoals hieronder gebruikt) op de pagina worden opgebouwd m.b.v. JavaScript. Dit programma gaat ervan uit dat er een aantal files zijn toegevoegd aan specifieke directories.</p>
 
 
-<h3>De plaatjes die links als icon in de wrappers worden getoond.</h3>
-<p>Het gaat om de volgende plaatjes:</p>
-<ul>
-    <li>'Algemeen - Content.png' - Icoon bij de inhoudsopgave;</li>
-    <li>'Algemeen - Powerpoint.png' - Icoon voor Powerpoint-presentaties</li>
-    <li>'Algemeen - PDF.png' - Icoon voor PDF-documenten</li>
-    <li>'Algemeen - Play.png' - Icoon voor Mediasite-, MS Stream- & YouTube-vids;</li>
-    <li>'Algemeen - Proeftoets.png' - Icoon voor Wooclap-toetsen;</li>
-    <li>'Algemeen - Uitwerking.png' - Icoon voor de uitwerking van opdrachten;</li>
-    <li>'Algemeen - Download.png' - Icoon voor de download van files;</li>
-    <li>'Algemeen - Inhoudsopgave.png' en 'Algemeen - Inhoudsopgave - Inactief.png' - Icoontjes voor de navigatieknoppen naar de inhoudsopgave;</li>
-    <li>'Algemeen - Vorige.png' en 'Algemeen - Vorige - Inactief.png' - Icoontjes voor de navigatieknop naar een vorige paragraaf.</li>
-    <li>'Algemeen - Volgende.png' en 'Algemeen - Volgende - Inactief.png' - Icoontjes voor de navigatieknop naar een volgende paragraaf.</li>
-</ul>
-<p>Deze plaatjes moeten allen (met de specifieke namen hieronder) in de directory 'media' worden geplaatst:</p>
-<div class="blended-kader"><img id="Icons" alt="Directory voor de icons" title="Directory voor de icons" style="max-width: 100%;"></div>
+<h4>De plaatjes</h3>
+<p>Het gaat om de plaatjes in de directory 'media' in Github: <a href="https://github.com/kadmosb1/BrightspacePlus">https://github.com/kadmosb1/BrightspacePlus</a>:
+<div class="blended-kader"><img id="Contents" alt="Inhoud van de directory 'media'" title="Inhoud van de directory 'media'" style="max-width: 100%;"></div>
 
 
 <h3>De files voor JavaScript en CSS</h3>
@@ -201,10 +186,17 @@ Op een willekeurige plaats in het document kun je een inhoudsopgave toevoegen:
 
 
 <h3 id="extern" type="demo">Externe links</h3>
-<p>Voor een externe link hoef je geen attributen toe te voegen. Stel dat je onderstaande link hebt toegevoegd aan je pagina:</p>
-<div class="blended-code">&lt;a href="https://lelij.com"&gt;Pagina van Karel J. van der Lelij&lt;/a&gt;</div>
+<p>Voor een externe link kun je een start- en einddatum opgeven:</p>
+<ul>
+<li><span style="font-family: Consolas;">start="2024/01/14"</span>: Als je deze startdatum toevoegt, wordt de link pas actief vanaf die datum.</li>
+<li><span style="font-family: Consolas;">finish="2024/01/31"</span>: Als je deze einddatum toevoegt, wordt de link getoond tot en met die datum.</li>
+<li>Zijn beide data ingevuld, dan is de link alleen actief vanaf de startdatum tot en met de einddatum.</li>
+</ul>
+
+<p>Stel dat je onderstaande link hebt toegevoegd aan je pagina:</p>
+<div class="blended-code">&lt;a href="https://lelij.com" start="2024/01/14"&gt;Pagina van Karel J. van der Lelij&lt;/a&gt;</div>
 <p>Dan wordt deze link als volgt getoond en wordt deze link in een nieuwe tab geopend:</p>
-<div class="blended-kader"><a href="https://lelij.com">Pagina van Karel J. van der Lelij</a></div>
+<div class="blended-kader"><a href="https://lelij.com" start="2024/02/07 9:35" finish="2024/02/07 10:02">Pagina van Karel J. van der Lelij</a></div>
 
 
 <h3 id="intern">Demo - Interne links</h3>
@@ -281,41 +273,59 @@ En dit is een volgende regel</pre>
 <h3 navigatie="yes">Het toevoegen van een Wooclap en/of een Wooflash (quiz of proeftoets)</h3>
 <p>Om een Wooclap- en/of Wooflash-vragenlijst toe te voegen, gebruik je de volgende code:</p>
 <pre class="blended-code">&lt;div wooclap-dir="PR210/questionnaires/619626f40d21011226ce5d48" 
-     wooflash-id="3ab639d3-ee25-48e9-9105-253aea5d948b"&gt;&lt;/div&gt;
+     wooflash-id="3ab639d3-ee25-48e9-9105-253aea5d948b" wooclap-werkvorm="het hoorcollege"&gt;&lt;/div&gt;<br>
+&lt;div wooflash-complete="3ab639d3-ee25-48e9-9105-253aea5d948b"&gt;&lt;/div&gt;<br>
+&lt;div wooclap-dir="PR210/questionnaires/619626f40d21011226ce5d48" type="wooclap-vraag"&gt;&lt;/div&gt;</pre>
 
-&lt;div wooclap-dir="PR210/questionnaires/619626f40d21011226ce5d48" type="vraag"&gt;&lt;/div&gt;</pre>
 <p>De gebruikte attributen hebben de volgende betekenis:</p>
 <ul>
 <li><span style="font-family: Consolas;">wooclap-dir</span>: De relatieve link die verwijst naar een vragenlijst in Wooclap (<a href="https://app.wooclap.com/PR210/questionnaires/619626f40d21011226ce5d48">https://app.wooclap.com/<span class="melding">PR210/questionnaires/619626f40d21011226ce5d48</span></a>).</li>
 <li><span style="font-family: Consolas;">wooflash-id</span>: De id van een vragenlijst in Wooflash (<a href="https://app.wooflash.com/study/3ab639d3-ee25-48e9-9105-253aea5d948b">https://app.wooflash.com/study/<span class="melding">3ab639d3-ee25-48e9-9105-253aea5d948b</span></a>).</li>
-<li><span style="font-family: Consolas;">type</span>: Met dit attribuut kun je onderscheid maken tussen de teksten die boven de wrapper worden getoond voor een <span style="font-family: Consolas;">proeftoets</span> of een <span style="font-family: Consolas;">vraag</span>. Als een wooflash-id wordt toegevoegd, is het type overbodig.</li>
+<li><span style="font-family: Consolas;">wooflash-complete</span>: De id van een vragenlijst in Wooflash, waarin alle vragen zijn verzameld in een complete proeftoets.</span></li>
+<li><span style="font-family: Consolas;">type</span>: Met dit attribuut kun je onderscheid maken tussen de teksten die boven de wrapper worden getoond voor een <span style="font-family: Consolas;">proeftoets</span> of een <span style="font-family: Consolas;">wooclap-vraag</span>. Als een wooflash-id wordt toegevoegd, is het type overbodig.</li>
+<li><span style="font-family: Consolas;">tekst</span>: Een tekst die boven het element wordt getoond. Als deze tekst niet is opgegeven, wordt een standaard tekst getoond.</li>
 <li><span style="font-family: Consolas;">visible="true"</span>: Als dit attribuut is toegevoegd met deze waarde, is
     de quiz bij het tonen van de pagina meteen zichtbaar. Als dit attribuut een andere waarde heeft of
     niet is toegevoegd, wordt de quiz initieel onzichtbaar gemaakt en kan de gebruiker deze via een 
     toggle-link alsnog zichtbaar maken.
 </li>
+<li><span style="font-family: Consolas;">wooclap-werkvorm</span>: In de tekst boven de Wooclap/Wooflash wordt deze werkvorm genoemd. Met dit attribuut 
+    geef je aan tijdens welke werkvorm (het hoorcollege, het practicum etc.) deze quiz behandeld is.
+</li>
 </ul>
 <p>Als je bovenstaande code (met toegevoegde paragrafen) gebruikt voor een proeftoets of vragenlijst worden twee wrappers met een proeftoets en een vragenlijst getoond (die een zelfde vragenlijst gebruiken, omdat dezelfde link wordt gebruikt):</p>
 <div class="blended-kader">
 <h4 style="margin-top: 0px;">Een voorbeeld van een proeftoets (met alleen Wooclap)</h4>
-<div wooclap-dir="PR210/questionnaires/619626f40d21011226ce5d48" type="proeftoets" visible="true"></div>
+<div wooclap-dir="PR210/questionnaires/619626f40d21011226ce5d48" type="proeftoets" visible="true" wooclap-werkvorm="het practicum"></div>
 <h4 style="margin-top: 0px;">Een voorbeeld van een proeftoets (met alleen Wooflash)</h4>
-<div wooflash-id="3ab639d3-ee25-48e9-9105-253aea5d948b"></div>
+<div wooflash-id="3ab639d3-ee25-48e9-9105-253aea5d948b" wooclap-werkvorm="het hoorcollege"></div>
+<h4 style="margin-top: 0px;">Een voorbeeld van een complete proeftoets (met Wooflash)</h4>
+<div wooflash-complete="PR2"></div>
 <h4 style="margin-top: 0px;">Een voorbeeld van een proeftoets (met zowel Wooclap als Wooflash)</h4>
-<div wooclap-dir="PR210/questionnaires/619626f40d21011226ce5d48" wooflash-id="3ab639d3-ee25-48e9-9105-253aea5d948b"></div>
+<div wooclap-dir="PR210/questionnaires/619626f40d21011226ce5d48" wooflash-id="3ab639d3-ee25-48e9-9105-253aea5d948b" wooclap-werkvorm="het werkcollege"></div>
 <h4>Een voorbeeld van een (korte) vragenlijst</h4>
-<div wooclap-dir="PR210/questionnaires/619626f40d21011226ce5d48" type="wooclap-vraag"></div>
+<div wooclap-dir="PR210/questionnaires/619626f40d21011226ce5d48" type="wooclap-vraag" tekst="Dit is een opgegeven testtekst boven een Wooclap-element"></div>
 </div>
 
 
 <h3 navigatie="yes">Het toevoegen van de uitwerking van een opdracht</h3>
-<p>Om de uitwerking van een opdracht toe te voegen, gebruik je de volgende code:</p>
+<p>Als je programmacode als uitwerking van een opdracht toe wilt voegen, gebruik je de volgende code:</p>
 <pre class="blended-code">&lt;pre&gt;public class Main {
 
     public static void main(String[] args) {
         System.out.println ("Hello world!");
     }
 }&lt;/pre&gt;</pre>
+<p>Als je 'gewone' tekst toe wilt voegen, gebruik je een div:</p>
+<pre class="blended-code">
+&lt;div class="blended-uitwerking"&gt;
+    Dit is een test met een lijst
+    &lt;ul&gt;
+        &lt;li&gt;1&lt;/li&gt;
+        &lt;li&gt;2&lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/div&gt;</pre>
+
 <p>In de zichtbare titel boven de uitwerking worden gegevens verwerkt van het hoofdstuk of de (sub-)paragraaf waarin de uitwerking voorkomt. De structuur van deze titel is "Klik hier om de uitwerking van %t %p (on-)zichtbaar te maken". In deze titel wordt %t vervangen door de waarde van het attribuut 'type' van de paragraaf en %p door de waarde van het attribuut 'paragraph' van het hoofdstuk/de (sub-)paragraaf waarin de uitwerking voorkomt. Het attribuut paragraph wordt automatisch toegekend. Het attribuut 'type' moet je zelf toevoegen aan dit hoofdstuk/deze (sub-)paragraaf. Als het attribuut 'type' niet is gedefinieerd, wordt %t op basis van het type van het hoofdstuk/de (sub-)paragraaf vervangen door 'hoofdstuk' of 'paragraaf'.</p>
 <p>Het gebruikte attribuut heeft de volgende betekenis:</p>
 <ul>
@@ -325,16 +335,26 @@ En dit is een volgende regel</pre>
     niet is toegevoegd, wordt de uitwerking initieel onzichtbaar gemaakt en kan de gebruiker deze via een 
     toggle-link alsnog zichtbaar maken.
 </li>
+<li><span style="font-family: Consolas;">title="Een titel"</span>: Als deze titel is ingevuld, dan wordt die in de toggle-balk getoond.</li>
 </ul>
-<p>Als je bovenstaande code (met toegevoegde paragraaf) gebruikt voor de uitwerking van een opdracht wordt de wrapper met de uitwerking getoond:</p>
+<p>Als je bovenstaande code-voorbeelden (met toegevoegde paragraaf) gebruikt voor de uitwerking van een opdracht worden de wrappers met de uitwerking als volgt getoond:</p>
 <div class="blended-kader">
-<h4 style="margin-top: 0px; margin-bottom: 0px;" type="opdracht" id="antwoord">Een voorbeeld van de uitwerking van een opdracht</h4>
-<pre>public class Main {
-
+    <h4 style="margin-top: 0px; margin-bottom: 0px;" type="opdracht" id="antwoord">Een voorbeeld van de uitwerking van een opdracht</h4>
+    <pre title="Uitwerking van de class Main">public class Main {
     public static void main(String[] args) {
         System.out.println ("Hello world!");
     }
 }</pre>
+    <div class="blended-uitwerking">
+
+        Dit is een test met een lijst
+        <ul>
+            <li>1</li>
+            <li>2</li>
+        </ul>
+
+    </div>
+
 </div>
 
 
@@ -367,8 +387,8 @@ voor de link geplakt).</li>
 
 <h3 navigatie="yes">Het toevoegen van een PDF-viewer</h3>
 <p>Je kunt een PDF-document ook direct in je pagina zichtbaar maken. Daarvoor gebruik je de volgende code (die hier wordt gegeven voor zowel een absolute als voor een relatieve link):</p>
-<pre class="blended-code">&lt;div pdf-root="relative" pdf="media/onderhoud/Onderhoud - Voorbeeld.pdf"&gt;&lt;div&gt;
-<script>document.write ('&lt;div pdf-root="absolute" pdf="' + strRootDir + '/media/onderhoud/Onderhoud - Voorbeeld.pdf"&gt;&lt;div&gt;');</script>
+<pre class="blended-code">&lt;div pdf-root="relative" pdf="media/onderhoud/Onderhoud - Voorbeeld.pdf"&gt;&lt;/div&gt;
+<script>document.write ('&lt;div pdf-root="absolute" pdf="' + strRootDir + '/media/onderhoud/Onderhoud - Voorbeeld.pdf"&gt;&lt;/div&gt;');</script>
 </pre>
 <p>De gebruikte attributen hebben de volgende betekenis:</p>
 <ul>
@@ -485,5 +505,120 @@ voor de link geplakt).</li>
     <div site="SE2-2021-2022_groups" pptx-id="703c7cf7-3ce7-4f57-bee9-b2def3aa70c3"></div>
 </div>
 
+<h3 navigatie="yes">Het opnemen van een verschuivend weekschema</h3>
+<p>Je kunt een weekschema op je pagina toevoegen dat de actieve we(e)k(en) uitgeklapt toont en die zo is opgebouwd dat de activiteit met de datum kan verschuiven.</p>
+
+<table id="weekschema"><colgroup><col style="width: 10%;"><col style="width: 15%;"><col style="width: 70%;"></colgroup>
+<tbody>
+<tr class="week-header" start="04/06/2023" finish="04/13/2023">
+<td colspan="3">Lesweek 10 (16 april)</td>
+</tr>
+<tr>
+<td colspan="3"><strong>Inlevermomenten deze week:</strong> Geen</td>
+</tr>
+<tr class="weekschema-content">
+<td>17 april</td>
+<td>Hoorcollege</td>
+<td><a href="/d2l/le/lessons/18624/topics/433180">GitHub, OTAP &amp; CI</a></td>
+</tr>
+<tr class="weekschema-content">
+<td>18 april</td>
+<td colspan="2" class="geen-activiteit">&nbsp;</td>
+</tr>
+<tr class="weekschema-content">
+<td>19 april</td>
+<td colspan="2" class="geen-activiteit">&nbsp;</td>
+</tr>
+<tr class="weekschema-content">
+<td rowspan="2">20 april</td>
+<td>Project 2</td>
+<td>Opstart van het project met inbreng van het bedrijf 42</td>
+</tr>
+<tr class="weekschema-content">
+<td>Practicum</td>
+<td>Oefenen met GitHub</td>
+</tr>
+<tr class="weekschema-content">
+<td>21 april</td>
+<td colspan="2" class="geen-activiteit">&nbsp;</td>
+</tr>
+<tr class="lege-regel">
+<td colspan="3">&nbsp;</td>
+</tr>
+<tr class="week-header" start="04/08/2023" finish="04/13/2023">
+<td colspan="3">Lesweek 11 (23 april)</td>
+</tr>
+<tr>
+<td colspan="3"><strong>Inlevermomenten deze week:</strong> Geen</td>
+</tr>
+<tr class="weekschema-content">
+<td>24 april</td>
+<td>Hoorcollege</td>
+<td>TDD &amp; Coverage</td>
+</tr>
+<tr class="weekschema-content">
+<td>25 april</td>
+<td>Practicum</td>
+<td>Stepik-opdrachten over Coverage</td>
+</tr>
+<tr class="weekschema-content">
+<td>26 april</td>
+<td colspan="2" class="geen-activiteit">&nbsp;</td>
+</tr>
+<tr class="weekschema-content">
+<td>27 april</td>
+<td colspan="2" class="vrij">Koningsdag</td>
+</tr>
+<tr class="weekschema-content">
+<td>28 april</td>
+<td colspan="2" class="geen-activiteit">&nbsp;</td>
+</tr>
+<tr class="lege-regel">
+<td colspan="3">&nbsp;</td>
+</tr>
+<tr class="week-header-visible">
+<td colspan="3">Lesweek 12 (30 april)</td>
+</tr>
+<tr>
+<td colspan="3" class="vrij">Roostervrije week</td>
+</tr>
+<tr class="lege-regel">
+<td colspan="3">&nbsp;</td>
+</tr>
+<tr class="week-header">
+<td colspan="3">Lesweek 13 (7 mei)</strong></td>
+</tr>
+<tr>
+<td colspan="3"><strong>Inlevermomenten deze week:</strong> Woensdag 10 mei - Concept van de testopdracht</td>
+</tr>
+<tr class="weekschema-content">
+<td>8 mei</td>
+<td>Hoorcollege</td>
+<td>Equivalence &amp; Pairwise Testing</td>
+</tr>
+<tr class="weekschema-content">
+<td rowspan="2">9 mei</td>
+<td>Practicum</td>
+<td>Oefenen met Equivalence &amp; Pairwise Testing</td>
+</tr>
+<tr class="weekschema-content">
+<td>Hoorcollege</td>
+<td>soliD, Observer Pattern &amp; Large Class/Long Parameter List</td>
+</tr>
+<tr class="weekschema-content">
+<td>10 mei</td>
+<td colspan="2" class="geen-activiteit">&nbsp;</td>
+</tr>
+<tr class="weekschema-content">
+<td>11 mei</td>
+<td>Practicum</td>
+<td>Testset bij DPG Casus + Peer Feedback op ingeleverde concept</td>
+</tr>
+<tr class="weekschema-content">
+<td>12 mei</td>
+<td colspan="2" class="geen-activiteit">&nbsp;</td>
+</tr>
+</tbody>
+</table>
 
 </body></html>
