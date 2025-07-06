@@ -61,7 +61,8 @@
  * De juiste css wordt toegevoegd aan de pagina in BrightSpace.
  */
 var domCSS = document.createElement ('link');
-var strCSSFileName = strRootDir + '/resources/brightspace.v4.css';
+var strTimestampCSS = (typeof strTimestamp === 'undefined' ? new Date ().toUTCString () : strTimestamp);
+var strCSSFileName = strRootDir + '/resources/brightspace.v4.css?v=' + strTimestampCSS;
 
 domCSS.rel = 'stylesheet';
 domCSS.type = 'text/css';
@@ -107,8 +108,10 @@ const EXTRA_STOF = 'extra:';
 
 const MEDIASITE_BASE_URL = 'https://hhs.mediamission.nl/Mediasite/Play/%id';
 const MEDIASITE_BASE_EMBED = MEDIASITE_BASE_URL;
-const STREAM_BASE_URL = 'https://web.microsoftstream.com/video/%id';
-const STREAM_BASE_EMBED = 'https://web.microsoftstream.com/embed/video/%id';
+const STREAM_ONEDRIVE_BASE_URL = 'https://dehaagsehogeschool-my.sharepoint.com/personal/%account/_layouts/15/embed.aspx?UniqueId=%id';
+const STREAM_TEAMS_SP_BASE_URL = 'https://dehaagsehogeschool.sharepoint.com/sites/%site/_layouts/15/embed.aspx?UniqueId=%id';
+const STREAM_ONEDRIVE_BASE_EMBED = STREAM_ONEDRIVE_BASE_URL;
+const STREAM_TEAMS_SP_BASE_EMBED = STREAM_TEAMS_SP_BASE_URL;
 const YOUTUBE_BASE_URL = 'https://www.youtube.com/watch?v=%id';
 const YOUTUBE_BASE_EMBED = 'https://www.youtube.com/embed/%id';
 const WOOCLAP_BASE_EMBED = 'https://app.wooclap.com/%link';
@@ -205,8 +208,15 @@ const FAQActions = {
 /*
  * Als het hele HTML-document geladen is, worden de blended divs gevuld met
  * de juiste content en opgemaakt.
+ * 
+ * Als laatste stap wordt gekeken of er wordt gelinkt naar een anker. Als dat zo
+ * is, wordt dit anker in het document geactiveerd.
  */
-window.onload = function (event) {
+window.onload = async function (event) {
+
+	if (typeof addCatalogus === 'function') {
+		await addCatalogus ();
+	}
 
 	objPagina = new Pagina ();
 	objPagina.addSecties ();
@@ -214,6 +224,12 @@ window.onload = function (event) {
 	objPagina.embedContent ();
 	new Weekschema ();
 	// toonAlleEventsInTabel ();
+
+	var brightspaceAnchor = Cookie.get ("brightspace-anchor");
+
+	if (brightspaceAnchor) {
+		Link.gotoAnchor (brightspaceAnchor);
+	}
 };
 
 // /////////////////////////////////////////////////////////////////////////// //
@@ -311,6 +327,47 @@ class Placeholder {
 		return Placeholder.replacePlaceholdersInTekst (strTitle, strType, strParagraph);
 	}
 }
+
+// /////////////////////////////////////////////////////////////////////////// //
+
+class MicrosoftDocumentStore {
+
+	static getBaseLink (dom, strLink, strPlaceholder) {
+		return Placeholder.replacePlaceholderInTekst (strLink, '%' + strPlaceholder, dom.getAttribute (strPlaceholder));
+	}
+
+	static blnAccountExists (domBlended) {
+
+		if (domBlended.getAttribute ('account')) {
+			return true;
+		}
+
+		return false;
+	}
+
+	static getBlendedObject (domBlended, intType) {
+
+		switch (intType) {
+
+			case STREAM:
+
+				if (this.blnAccountExists (domBlended)) {
+					return new OnedriveStream (domBlended);
+				}
+
+				return new TeamsOfSPStream (domBlended);
+
+			case POWERPOINT:
+
+				if (this.blnAccountExists (domBlended)) {
+					return new OnedrivePowerPoint (domBlended);
+				}
+
+				return new TeamsOfSPPowerPoint (domBlended);
+		}
+	}
+}
+
 // /////////////////////////////////////////////////////////////////////////// //
 
 class Studietijd {
@@ -1266,7 +1323,78 @@ class Sectie {
 
 // /////////////////////////////////////////////////////////////////////////// //
 
+class QueryStringParameter {
+
+	static getQueryString (url) {
+
+		if (url.includes ("?")) {
+			return url.split ('?') [1];
+		}
+
+		return "";
+	}
+
+	static getQueryStringArray (url) {
+		var queryString = QueryStringParameter.getQueryString (url);
+		return queryString.split ('&');
+	}
+
+	static getParameterValue (url, key) {
+		var arrQueryString = this.getQueryStringArray (url);
+
+		for (var i = 0; i < arrQueryString.length; i++) {
+
+			var strParameter = arrQueryString [i];
+
+			if (strParameter.split ('=') [0] === (key + '=')) {
+				return strParameter.split ('=') [1];
+			}
+		}
+
+		return "";
+	}
+
+	static getParameter (strParameter) {
+
+		if (strParameter.includes ('=')) {
+			return new QueryStringParameter (strParameter.split ('=') [0], strParameter.split ('=') [1]);
+		}
+
+		return undefined;
+	}
+
+	get key () {
+		return this._key;
+	}
+
+	set key (strKey) {
+		this._key = strKey;
+	}
+
+	get value () {
+		return this._value;
+	}
+
+	set value (strValue) {
+		this._value = strValue;
+	}
+
+	constructor (strKey, strValue) {
+		this.key = strKey;
+		this.value = strValue;
+	}
+}
+
+// /////////////////////////////////////////////////////////////////////////// //
+
 class Link {
+
+	static gotoAnchor (brightspaceAnker) {
+		var url = location.href;
+		location.href = "#" + brightspaceAnker;
+		history.replaceState (null, null, url);
+		Cookie.delete ("brightspace-anchor");
+	}
 
 	static get arrLinks () {
 
@@ -1440,10 +1568,52 @@ class Link {
 		}
 	}
 
+	addOnClickForExternalAnchor (url, anchor) {
+
+		this.domLink.href = '';
+		this.domLink.style.cursor = 'cursorurl';
+
+		this.domLink.addEventListener ('click', function () {
+			Cookie.set ('brightspace-anchor', anchor);
+			window.open(url, '_blank');
+			// location.href = url;
+		}, false);
+	}
+
 	constructor (domLink, start, finish, domSectie, fnExtraClickFunctie) {
 
 		this.domLink = domLink;
 		this.strHREF = domLink.getAttribute ('href');
+		this.arrQueryParameters = [];
+
+		if (this.strHREF && (this.strHREF.charAt (0) !== '#') && this.strHREF.includes ('#')) {
+			this.addOnClickForExternalAnchor (this.strHREF.split ('#') [0], this.strHREF.split ('#') [1]);
+		}
+
+		// Als een querystring is meegegeven aan de URL, dan wordt die omgezet in een 
+		// array met parameters (key- & value-pairs).
+		if (this.strHREF && this.strHREF.includes ("?")) {
+
+			var arrQueryStrings = QueryStringParameter.getQueryStringArray (this.strHREF);
+
+			for (var i = 0; i < arrQueryStrings.length; i++) {
+
+				var qsp = QueryStringParameter.getParameter (arrQueryStrings [i]);
+
+				if (qsp) {
+
+					if (qsp.key === 'kb-brightspace-anchor') {
+						this.addOnClickForExternalAnchor (this.strHREF.split ('?') [0], qsp.value);
+					}
+
+					this.arrQueryParameters.push (qsp);
+				}
+			}
+		}
+		else {
+			this.arrQueryParameters = null;
+		}
+
 		this.start = Link.getDate (start);
 		this.finish = Link.getDate (finish);
 
@@ -2217,7 +2387,7 @@ class Cookie {
 	 * Verwijder de cookie met de meegegeven key.
 	 */
 	static delete (key) {
-  		Cookie.set ('kb-' + key, '', {'expires': new Date (Date.now() - 24 * 60 * 60 * 1000).toUTCString ()});	
+  		Cookie.set (key, '', {'expires': new Date (Date.now() - 24 * 60 * 60 * 1000).toUTCString ()});	
 	}
 
 	static test () {
@@ -3619,7 +3789,7 @@ function getInvisibleContent (strType, strLoading) {
 	}
 
 	strInvisibleContent += '    <iframe frameborder="0" scrolling="auto" marginheight="0" marginwidth="0"' +
-	                       '            allow="fullscreen" data-mce-fragment="1">' + 
+	                       '            allow="fullscreen">' + // data-mce-fragment="1">' + 
     					   '    </iframe>' +
 						   '</div>';
 	return strInvisibleContent;
@@ -3892,12 +4062,14 @@ class BlendedElements {
     				break;
     			case 'werkvorm': new FAQLijst (domBlended); break;
     			case MEDIASITE + '-id': objBlended = new MediaSite (domBlended); break;
-        		case STREAM + '-id': objBlended = new MSStream (domBlended); break;
+        		case STREAM + '-id': objBlended = MicrosoftDocumentStore.getBlendedObject (domBlended, STREAM); break;
        			case YOUTUBE + '-id': objBlended = new YouTube (domBlended); break;
     			case DOWNLOAD + '-link': new DownloadLink (domBlended); break;
+    			case UITWERKING: new Uitwerking (domBlended); break;
+				case POWERPOINT + '-id': objBlended = MicrosoftDocumentStore.getBlendedObject (domBlended, POWERPOINT); break;
 
-				case POWERPOINT + '-id': 
-
+				/* 16 juni 2025: Uitbesteed aan static methode van MicrosoftDocumentStore (i.v.m. vergelijkbare constructie bij MSStream)
+				 *
 					if (domBlended.getAttribute ('account')) {
 						objBlended = new OnedrivePowerPoint (domBlended);
 					}
@@ -3906,10 +4078,7 @@ class BlendedElements {
 					}
 
 					break;
-
-    			case UITWERKING:
-    				new Uitwerking (domBlended);
-    				break;
+				 */
     		}
 
     		if (objBlended) {
@@ -4106,12 +4275,27 @@ class PDFDocument extends Blended {
 	}
 
 	/*
+	 * 25/05/2025: Als het attribuut page als een getal wordt meegegeven, dan wordt het achter de link geplakt.
+	 */
+	static addPageToPDFLink (strHREF, strOperator, intPage) {
+
+		if (typeof intPage === 'number' && isFinite (intPage)) {
+			return strHREF + strOperator + 'page=' + intPage;
+		}
+		else {
+			return strHREF;
+		}
+	}
+
+	/*
 	 * Deze code heb ik op 30 november 2022 overgenomen van https://codepen.io/mrapol/pen/ObbOdQ
 	 * en daarna aangepast.
 	 */
 	constructor (domPDFDocument) {
 
 		var strLink = domPDFDocument.getAttribute (PDF);
+		var strEmbed;
+		var intPage = parseInt (domPDFDocument.getAttribute ('page'), 10);
 		var strDocument = 'documenten/OPT3 13.2 - Cheat Sheet Code Smells.pdf';
 
 		/*
@@ -4130,7 +4314,12 @@ class PDFDocument extends Blended {
 			strLink = strRootDir + addSlashIfNeeded (strLink);
 		}
 
-		var strEmbed = strLink;
+		/*
+		 * 26 mei 2025: Als paginanummer een getal is, worden link en embed aangepast.
+		 */
+		strLink = PDFDocument.addPageToPDFLink (strLink, '#', intPage);
+		strEmbed = strLink;
+
 		super (domPDFDocument, PDF, 'het PDF-document', strEmbed, strLink, 'PDF-document wordt geladen...');
 
 		if (strLink.includes (strDocument)) {
@@ -4157,7 +4346,6 @@ class PDFDocument extends Blended {
 	getIconHTML () {
 		return super.getIconHTML (PDF);
 	}
-
 }
 
 // /////////////////////////////////////////////////////////////////////////// //
@@ -4791,8 +4979,31 @@ class YouTube extends Video {
 
 class MSStream extends Video {
 
-	constructor (domMSStream, intTeller) {
-		super (STREAM, STREAM_BASE_EMBED, STREAM_BASE_URL, domMSStream);
+	constructor (domMSStream, strBaseEmbed, strBaseURL, strPlaceholder) {
+		super (STREAM, strBaseEmbed, strBaseURL, domMSStream);
+	}
+}
+
+class OnedriveStream extends MSStream {
+
+	constructor (domMSStream) {
+		super (domMSStream,
+			   MicrosoftDocumentStore.getBaseLink (domMSStream, STREAM_ONEDRIVE_BASE_EMBED, 'account'), 
+			   MicrosoftDocumentStore.getBaseLink (domMSStream, STREAM_ONEDRIVE_BASE_URL, 'account'),
+			   'account');
+		console.log (ONEDRIVE_BASE_URL);
+		console.log (MicrosoftDocumentStore.getBaseLink (domMSStream, ONEDRIVE_BASE_URL, 'account'));
+	}
+
+}
+
+class TeamsOfSPStream extends MSStream {
+
+	constructor (domMSStream) {
+		super (domMSStream, 
+			   MicrosoftDocumentStore.getBaseLink (domMSStream, STREAM_TEAMS_SP_BASE_EMBED, 'site'), 
+			   MicrosoftDocumentStore.getBaseLink (domMSStream, STREAM_TEAMS_SP_BASE_URL, 'site'),
+			   'site');
 	}
 }
 
@@ -4885,8 +5096,13 @@ class Wooflash extends Quiz {
 		}
 
 		var strEmbed = Placeholder.replacePlaceholderInTekst (WOOFLASH_BASE_EMBED, '%id', strAttribute);
-		strTekst += ' (het nadeel van Wooflash is wel dat je hiervoor alleen in kunt loggen met een account dat je ' + 
-		            'aanmaakt bij Wooflash en dat je dit account dus niet kunt gebruiken voor bijv. Wooclap).';
+		
+		/*
+		 * 2 juni 2025: Onderstaande tekst is verwijderd zodat deze niet meer wordt getoond bij Programming 1.
+		 *
+		 * strTekst += ' (het nadeel van Wooflash is wel dat je hiervoor alleen in kunt loggen met een account dat je ' + 
+		 *            'aanmaakt bij Wooflash en dat je dit account dus niet kunt gebruiken voor bijv. Wooclap).';
+		 */
 		super (domWooflash, 'deze proeftoets', strEmbed, strTekst);
 	}
 }
@@ -4969,7 +5185,7 @@ class Proeftoets {
 			}
 		}
 		else if (strWooflashComplete) {
-			strWooflashTekst = strTekstCompleteWooflash;
+			strWooflashTekst = ""; // 2 juni 2025: Aangepast voor Programming 1 & 2. Was: 'strTekstCompleteWooflash';
 		}
 		else {	
 			strWooflashTekst = strTekst + '<br><br>Hiervoor wordt gebruik gemaakt van een Wooflash-quiz. ' + strWooflashTekst;

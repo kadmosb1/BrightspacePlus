@@ -796,7 +796,7 @@ footer {
      background-color: rgb(178, 198, 216);
 }
 
-#weekschema .afwijking {
+#weekschema .afwijking, .afwijking a {
     background-color: #00b2cd;
     color: white;
 }

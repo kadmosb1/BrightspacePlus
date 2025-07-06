@@ -5,7 +5,8 @@
     
     var strRootDir = document.URL.substr (0, document.URL.lastIndexOf ('/'));
     var strScriptID = 'inline.v4';
-    var strJSFileName = strRootDir + '/resources/' + strScriptID + '.js';
+    var strTimestamp = new Date ().toUTCString ();
+    var strJSFileName = strRootDir + '/resources/' + strScriptID + '.js?v=' + strTimestamp;
     var elmScript = document.createElement ('script');
     elmScript.setAttribute ('src', strJSFileName);
     elmScript.setAttribute ('async', false);
@@ -96,7 +97,8 @@ Op een willekeurige plaats in het document kun je een inhoudsopgave toevoegen:
  
     var strRootDir = document.URL.substr (0, document.URL.lastIndexOf ('/'));
     var strScriptID = 'inline.v4';
-    var strJSFileName = strRootDir + '/resources/' + strScriptID + '.js';
+    var strTimestamp = new Date ().toUTCString ();
+    var strJSFileName = strRootDir + '/resources/' + strScriptID + '.js?v=' + strTimestamp;
     var elmScript = document.createElement ('script');
     elmScript.setAttribute ('src', strJSFileName);
     elmScript.setAttribute ('async', false);
@@ -233,7 +235,8 @@ En dit is een volgende regel</pre>
 <pre class="blended-code">&lt;div mediasite-id="f9e8ef2a38184d158b5b8d1f115106b31d" title="Een %t-filmpje in paragraaf %p"&gt;&lt;/div&gt;</pre>
 </li>
 <li>Voor MS Stream:
-<pre class="blended-code">&lt;div stream-id="ea8e83e0-888b-4f22-a1c7-b15e842d0bec" title="Een %t-filmpje in paragraaf %p"&gt;&lt;/div&gt;</pre>
+<pre class="blended-code">&lt;div stream-id="73103235-5299-4a64-9927-c13da4e6ff66" account="kjvdlelij_hhs_nl" title="Een %t-filmpje in paragraaf %p"&gt;&lt;/div&gt;</pre>
+<pre class="blended-code">&lt;div stream-id="e38372e9-57cf-460c-ab29-0f423d3e014f" site="Filmopnames_groups" title="Een %t-filmpje in paragraaf %p"&gt;&lt;/div&gt;</pre>
 </li>
 <li>Voor Mediasite:
 <pre class="blended-code">&lt;div youtube-id="ZDpQQj3r_W8" title="Een %t-filmpje in paragraaf %p" visible="true"&gt;&lt;/div&gt;</pre>
@@ -242,7 +245,9 @@ En dit is een volgende regel</pre>
 <p>De gebruikte attributen hebben de volgende betekenis:</p>
 <ul>
 <li><span style="font-family: Consolas;">mediasite-id</span>: De id die verwijst naar een vid in MediaSite (zoals in <a href="https://hhs.mediamission.nl/Mediasite/Play/f9e8ef2a38184d158b5b8d1f115106b31d" target="_blank" rel="noopener">https://hhs.mediamission.nl/Mediasite/Play/<span class="melding">f9e8ef2a38184d158b5b8d1f115106b31d</span></a>).</li>
-<li><span style="font-family: Consolas;">stream-id</span>: De id die verwijst naar een vid in MS Stream (zoals in <a href="https://web.microsoftstream.com/video/ea8e83e0-888b-4f22-a1c7-b15e842d0bec" target="_blank" rel="noopener">https://web.microsoftstream.com/video/<span class="melding">ea8e83e0-888b-4f22-a1c7-b15e842d0bec</span></a>).</li>
+<li><span style="font-family: Consolas;">stream-id</span>: De id die verwijst naar een vid in MS Stream (zie paragrafen <a href="#onedrive-stream" title="%p">x</a> en <a href="#teams-stream" title="%p">x</a> in het eerste kader hieronder).</li>
+<li><span style="font-family: Consolas;">account (alleen bij MS Stream)</span>: Het account dat in de link wordt gebruikt om in OneDrive te kunnen verwijzen naar de juiste Stream (zoals in <a href="https://dehaagsehogeschool-my.sharepoint.com/personal/kjvdlelij_hhs_nl/_layouts/15/Embed.aspx?id=74bfde9e-f867-462f-b623-adb11337cfb2">https://dehaagsehogeschool-my.sharepoint.com/personal/<span class="melding">kjvdlelij_hhs_nl</span>/_layouts/15/Embed.aspx?id=74bfde9e-f867-462f-b623-adb11337cfb2</a>).</li>
+<li><span style="font-family: Consolas;">site (alleen bij MS Stream)</span>: De site die in de link wordt gebruikt om in SharePoint of Teams te kunnen verwijzen naar de juiste Stream (zoals in <a href="https://dehaagsehogeschool.sharepoint.com/sites/BP2526_groups/_layouts/15/Embed.aspx?id=bdb30083-2ab4-4de1-9d8a-7c20520372c6">https://dehaagsehogeschool.sharepoint.com/sites/<span class="melding">BP2526_groups</span>/_layouts/15/Embed.aspx?id=bdb30083-2ab4-4de1-9d8a-7c20520372c6</a>).</li>
 <li><span style="font-family: Consolas;">youtube-id</span>: De id die verwijst naar een vid in YouTube (zoals in <a href="https://www.youtube.com/watch?v=ZDpQQj3r_W8" target="_blank" rel="noopener">https://www.youtube.com/watch?v=<span class="melding">ZDpQQj3r_W8</span></a>).</li>
 <li><span style="font-family: Consolas;">paragraph</span>: De paragraaf waarbinnen de video wordt getoond (Hieronder is een video toegevoegd aan paragrafen <a href="#MediaSite" title="%p">x</a>, <a href="#MSStream" title="%p">x</a> en <a href="#YouTube" title="%p">x</a>). <span class="melding">Dit attribuut is overbodig, omdat dit attribuut wordt overschreven door de automatische nummering van hoofdstukken en (sub-)paragrafen.</span></li>
 <li><span style="font-family: Consolas;">title</span>: Deze bevat een korte beschrijving van de inhoud van de video. %t en %p in deze title verwijzen naar respectievelijk het type en het nummer van de paragraaf waarin dit element is opgenomen en worden vervangen door deze informatie.</li>
@@ -252,6 +257,39 @@ En dit is een volgende regel</pre>
     toggle-link alsnog zichtbaar maken.
 </li>
 </ul>
+<p>Omdat het toevoegen van een Stream-video ingewikkelder is dan het toevoegen van de andere typen filmpjes, heb ik hieronder een extra instructie voor dit type video toegevoegd.</p>
+<div class="blended-kader">
+    <h4 id="onedrive-stream">Het toevoegen van een persoonlijke video (vanuit OneDrive)</h4>
+    <p>Om een persoonlijke video (vanuit OneDrive) toe te voegen aan je BrightSpace-pagina, doorloop je de volgende stappen:</p>
+    <ul>
+        <li>Doorloop eenmalig de volgende stappen:<br /><br />
+            <ul><li>Ga naar OneDrive (<a href="https://m365.cloud.microsoft/launch/onedrive">https://m365.cloud.microsoft/launch/onedrive</a>) en maak in de root van OneDrive
+             een directory aan (met bijvoorbeeld de naam 'onderwijsmateriaal (publiek)') en geef de directory met rood een aparte kleur.</li>
+        <li>Open de directory (als dat nog niet is gebeurd) en selecteer de knop 'Delen'.</li>
+        <li>Selecteer rechts boven het icoontje voor 'Toegang verlenen'.</li>
+        <li style="color: red;">Selecteer rechts van de naam 'Kan weergeven'!</li>
+        <li>Voer als naam 'Iedereen behalve externe gebruikers' in, selecteer die groep en verwijder het vinkje voor 'Meldingen verzenden'.</li>
+        <li>Selecteer de knop 'Toegang verlenen'.</li>
+        <li>Vanaf nu kopieer je de video's naar deze directory voordat je ze deelt volgens onderstaande stappen.<br /><br /></li></ul></li>
+        <li>Ga naar de Streams-pagina op <a href="https://m365.cloud.microsoft/launch/stream">https://m365.cloud.microsoft/launch/stream</a> of volg de link op intranet:<br /><br />
+        <img src="media/stream/intranet.jpg" class="img-pptx" width="100%"><br /><br /></li>
+        <li>Als je een video wilt delen, kan dat alleen bij video's die jij hebt opgenomen. Selecteer daarom onder 'Aanbevolen' de knop 'Gemaakt door mij' en selecteer een video:<br /><br />
+        <img src="media/stream/stream.jpg" class="img-pptx" width="100%"><br /><br /></li>
+        <li>De video-pagina opent. Selecteer eerst de knop 'Verplaatsen naar' boven de video om de video te verplaatsen naar de hierboven aangemaakte directory.</li>
+        <li>Als je nu rechts boven de video de knop 'Delen' selecteert, voor 'Delen' kiest, links onder voor 'Toegang beheren' en voor het tabblad 'Groepen', zie je dat de video is gedeeld met iedereen.</li>
+        <li>Nu het account en de Unique ID nog. Ga terug naar de video-pagina, kies opnieuw voor 'Delen', Nu voor '&lt;/&gt; Code insluiten' en kopieer je gebruikersnaam en de (hieronder blauw gemarkeerde) unieke code:<br /><br />
+        <img src="media/stream/unique-id.jpg" class="img-pptx" width="100%"></li>
+    </ul>
+<h4 id="teams-stream">Het toevoegen van een gedeelde video (vanuit Teams)</h4>
+<p>Om een video vanuit Teams te kunnen delen, Doorloop je vergelijkbare stappen als in paragraaf <a href="#onedrive-stream" title="%p">x</a> hierboven:</p>
+<ul><li>Volg voor elke Teams-omgeving van waaruit je video's wilt delen de stappen hierboven om een directory aan te maken.</li>
+<li>Opgenomen video's worden onder het tabblad 'Bestanden' opgeslagen in de directory 'Recordings'.</li>
+<li>Selecteer de video in deze directory. De pagina voor de video in Stream wordt geopend.</li>
+<li>Als je een video deelt is het handig dat die video langer bewaard blijft. Verwijder daarom de bewaartermijn van 60 dagen onder de video met 'Vervaldatum verwijderen'.</li>
+<li>Volg de stappen hierboven in paragraaf <a href="#onedrive-stream" title="%p">x</a> hierboven tot de laatste stap.</li>
+<li>De Unique ID werkt hetzelfde, maar in plaats van het account kopieer je nu de naam van het team naar 'site'.</li>
+</ul>
+</div>
 <p>Als je bovenstaande codes (met toegevoegde paragrafen) gebruikt, worden een lijst (met in dit geval drie video's) en de drie video's getoond:</p>
 <div class="blended-kader">
 <h4 style="margin-top: 0px;">De lijst met gebruikte video's op deze pagina</h4>
@@ -259,7 +297,9 @@ En dit is een volgende regel</pre>
 <h4 id="MediaSite" type="MediaSite">Een voorbeeld van een video in MediaSite</h4>
 <div mediasite-id="f9e8ef2a38184d158b5b8d1f115106b31d" title="Een %t-filmpje in paragraaf %p"></div>
 <h4 id="MSStream" type="MS Stream">Een voorbeeld van een video in MS Stream</h4>
-<div stream-id="ea8e83e0-888b-4f22-a1c7-b15e842d0bec" title="Een %t-filmpje in paragraaf %p"></div>
+<div stream-id="73103235-5299-4a64-9927-c13da4e6ff66" account="kjvdlelij_hhs_nl" title="Een %t-filmpje in paragraaf %p"></div>
+<div stream-id="e38372e9-57cf-460c-ab29-0f423d3e014f" site="Filmopnames_groups" title="Een %t-filmpje in paragraaf %p"></div>
+
 <h4 id="YouTube" type="YouTube">Een voorbeeld van een video in YouTube</h4>
 <div youtube-id="ZDpQQj3r_W8" title="Een %t-filmpje in paragraaf %p" visible="true"></div>
 </div>
@@ -382,8 +422,9 @@ voor de link geplakt).</li>
 
 <h3 navigatie="yes">Het toevoegen van een PDF-viewer</h3>
 <p>Je kunt een PDF-document ook direct in je pagina zichtbaar maken. Daarvoor gebruik je de volgende code (die hier wordt gegeven voor zowel een absolute als voor een relatieve link):</p>
-<pre class="blended-code">&lt;div pdf-root="relative" pdf="media/onderhoud/Onderhoud - Voorbeeld.pdf"&gt;&lt;/div&gt;
+<pre class="blended-code">
 <script>document.write ('&lt;div pdf-root="absolute" pdf="' + strRootDir + '/media/onderhoud/Onderhoud - Voorbeeld.pdf"&gt;&lt;/div&gt;');</script>
+&lt;div pdf-root="relative" pdf="media/onderhoud/Onderhoud - Voorbeeld.pdf" page="4" visible="true"&gt;&lt;/div&gt;
 </pre>
 <p>De gebruikte attributen hebben de volgende betekenis:</p>
 <ul>
@@ -391,6 +432,10 @@ voor de link geplakt).</li>
 <li><span style="font-family: Consolas;">pdf-root</span>: Is de link absoluut (startend met <span style="font-family: Consolas;">https://...</span>, <span style="font-family: Consolas;">https://...</span> of <span style="font-family: Consolas;">file://...</span>) of relatief (en wordt er dus
 <script>document.write ('\'<span style="font-family: Consolas;">' + strRootDir + '/</span>\'');</script>
 voor de link geplakt).</li>
+<li><span style="font-family: Consolas;">page</span>: 
+    Nummer van de pagina in het PDF-document die moet worden geopend als het document wordt ingeladen. Als je gebruik wilt maken van dit attribuut, moet dit worden gecombineerd met
+    het attribuut en de waarde <span style="font-family: Consolas;">visible="true"</span> (omdat anders de PDF niet direct wordt geopend en daardoor het document niet op de geselecteerde pagina wordt getoond).
+</li>
 <li><span style="font-family: Consolas;">visible="true"</span>: Als dit attribuut is toegevoegd met deze waarde, is
     het PDF-document bij het tonen van de pagina meteen zichtbaar. Als dit attribuut een andere waarde heeft of
     niet is toegevoegd, wordt het PDF-document initieel onzichtbaar gemaakt en kan de gebruiker deze via een 
@@ -402,7 +447,7 @@ voor de link geplakt).</li>
 <h4>Een voorbeeld van een absolute PDF-document</h4>
 <script>document.write ('<div pdf-root="absolute" pdf="' + strRootDir + '/media/onderhoud/Onderhoud - Voorbeeld.pdf"></div>');</script>
 <h4 style="margin-top: 0px;">Een voorbeeld van een relative PDF-document</h4>
-<div pdf-root="relative" pdf="media/onderhoud/Onderhoud - Voorbeeld.pdf"></div>
+<div pdf-root="relative" pdf="media/onderhoud/Onderhoud - Voorbeeld.pdf" page="4" visible="true"></div>
 </div>
 
 

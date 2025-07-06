@@ -8,7 +8,8 @@
             "type": "chrome",
             "request": "launch",
             "name": "Open Blended.html",
-            "file": "C:\\Users\\kjvdlelij\\OneDrive - De Haagse Hogeschool\\Onderwijs\\Algemeen\\BrightspacePlus\\Blended.html"
+            "file": "${cwd}\\Blended.html"
+            // "file": "D:\\Users\\kjvdlelij\\OneDrive - De Haagse Hogeschool\\Onderwijs\\Algemeen\\BrightspacePlus\\Blended.html"
         }
     ]
 }
