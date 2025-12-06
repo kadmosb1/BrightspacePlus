@@ -152,6 +152,20 @@ document.getElementById (strScriptID).onload = function () {
 		TestFAQSetup.test ();
 		Test.test ();
 	};
+
+	/*
+	 * Ik wil dat de div's op pagina's die worden bewerkt rood omlijnd zijn, maar
+	 * als ze getoond worden, wil ik graag dat de omlijning ontbreekt en dat gebruik
+	 * wordt gemaakt van de standaard opmaak in de externe css-file.
+	 * 
+	 * Stap 1: Zoek de style-tag op met de id no-active-js.
+	 * Stap 2: Controleer of de tag bestaat en verwijder deze.
+	 */
+    const noJSStyleTag = document.getElementById('no-active-js');
+
+    if (noJSStyleTag && noJSStyleTag.parentNode) {
+        noJSStyleTag.parentNode.removeChild (noJSStyleTag);
+    }
 }
 
 // /////////////////////////////////////////////////////////////////////////// //
@@ -226,6 +240,7 @@ window.onload = async function (event) {
 	// toonAlleEventsInTabel ();
 
 	var brightspaceAnchor = Cookie.get ("brightspace-anchor");
+	console.log (brightspaceAnchor);
 
 	if (brightspaceAnchor) {
 		Link.gotoAnchor (brightspaceAnchor);
@@ -1389,12 +1404,24 @@ class QueryStringParameter {
 
 class Link {
 
+	/*
+	 * Stap 1: Vind het doelelement.
+	 * Stap 2: Check of het doelelement bestaat en toon dit element bovenaan de pagina.
+	 */
 	static gotoAnchor (brightspaceAnker) {
-		var url = location.href;
-		location.href = "#" + brightspaceAnker;
-		history.replaceState (null, null, url);
+
+    	const doelElement = document.getElementById (brightspaceAnker);
+
+    	if (doelElement) {
+
+        	doelElement.scrollIntoView ({
+            	behavior: 'smooth', // Optioneel:  vloeiend scrollen
+            	block: 'start'      // Essentieel: zet het element bovenaan de viewport
+        	});
+		}
+
 		Cookie.delete ("brightspace-anchor");
-	}
+    }
 
 	static get arrLinks () {
 
@@ -1409,18 +1436,26 @@ class Link {
 		return !domLink.parentNode.parentNode.classList.contains ('toggle-div');
 	}
 
-	static isInternal (link) {
+	static getLink (link) {
 
 		var strHREF;
 
 		if (typeof link === 'string') {
-			strHREF = link;
+			return link;
 		}
 		else {
-			strHREF = link.getAttribute ('href');
+			return link.getAttribute ('href');
 		}
+	}
 
+	static isInternal (link) {
+		var strHREF = Link.getLink (link);
 		return strHREF && strHREF.charAt (0) === '#';
+	}
+
+	static containsAnchorInternalToSite (link) {
+		var strHREF = Link.getLink (link);
+		return (strHREF.indexOf ("http") !== 0) && strHREF.includes ("#");
 	}
 
 	getOmvattendeSectie () {
@@ -1493,13 +1528,6 @@ class Link {
 					 * Er geldt één uitzondering: als de link verwijst naar een vorige of volgende paragraaf.
 					 */
 					this.activeer ();
-					/*
-					if (!((this.domLink.classList.contains ('navigatie-link'))
-						  &&
-						  (!strHREF.toLowerCase ().includes ('#h2-inhoud')))) {
-						this.domLink.setAttribute ('onclick', 'location.href=\'#' + strIDVanHuidigeParagraaf + '\';');
-					}
-					*/
 				}
 				else {
 					console.log ('In dit document komt geen anker met #' + strID + ' voor. Controleer deze link');
@@ -1507,12 +1535,12 @@ class Link {
 					this.domLink.style.color = 'red';
 				}
 			}
-
+				
 			/*
 			 * Een externe link wordt geopend in een nieuw tabblad.
 			 */
-			else {
-
+			else if (!Link.containsAnchorInternalToSite (this.strHREF)) {
+				
 				if (this.domLink.tagName.toLowerCase () == 'a') {
 					this.domLink.setAttribute ('target', '_blank');
 				}
@@ -1570,7 +1598,8 @@ class Link {
 
 	addOnClickForExternalAnchor (url, anchor) {
 
-		this.domLink.href = '';
+		this.domLink.removeAttribute ('href');
+		this.domLink.removeAttribute ('target');
 		this.domLink.style.cursor = 'cursorurl';
 
 		this.domLink.addEventListener ('click', function () {
@@ -1586,7 +1615,7 @@ class Link {
 		this.strHREF = domLink.getAttribute ('href');
 		this.arrQueryParameters = [];
 
-		if (this.strHREF && (this.strHREF.charAt (0) !== '#') && this.strHREF.includes ('#')) {
+		if (this.strHREF && (this.strHREF.charAt (0) !== '#') && (this.strHREF.lastIndexOf ("http", 0) !== 0) && this.strHREF.includes ('#')) {
 			this.addOnClickForExternalAnchor (this.strHREF.split ('#') [0], this.strHREF.split ('#') [1]);
 		}
 
@@ -2898,7 +2927,7 @@ function getElementsByNames (strNames, domRoot = document) {
 				addElementsWithTagToArray (domRoot, strName, arrResults);
 				break;
 
-			case 'werkvorm':
+			case 'intro':
 			case FAQ:
 				addFAQElementsToArray (domRoot, FAQ, arrResults);
 				break;
@@ -4060,7 +4089,7 @@ class BlendedElements {
     				}
 
     				break;
-    			case 'werkvorm': new FAQLijst (domBlended); break;
+    			case 'faq-intro': new FAQLijst (domBlended); break;
     			case MEDIASITE + '-id': objBlended = new MediaSite (domBlended); break;
         		case STREAM + '-id': objBlended = MicrosoftDocumentStore.getBlendedObject (domBlended, STREAM); break;
        			case YOUTUBE + '-id': objBlended = new YouTube (domBlended); break;
@@ -4596,15 +4625,8 @@ class FAQLijst extends Blended {
 
 		var objFAQLijst = this;
 
-		var strNiveau = this.domBlendedElement.getAttribute ('header');
-		var strTitel = this.domBlendedElement.getAttribute ('title');
-		var domHeader = document.createElement ('h' + (strNiveau || '3'))
-		domHeader.innerHTML = strTitel || 'FAQ';
-		this.domBlendedElement.parentNode.insertBefore (domHeader, this.domBlendedElement);
-
 		var domToelichting = document.createElement ('p');
-		domToelichting.innerHTML = 'Tijdens ' + this.strWerkvorm + ' kwamen een aantal veel voorkomende vragen aan de orde. ' + 
-		                           'Die worden hieronder beantwoord.';
+		domToelichting.innerHTML = this.domBlendedElement.getAttribute ('faq-intro');
 		domToelichting.style.cssText += "margin-bottom: 0px;";
 		this.domBlendedElement.parentNode.insertBefore (domToelichting, this.domBlendedElement);
 
@@ -5315,25 +5337,9 @@ class WeekschemaItem {
 			this.toggleItem ();
 		}
 
-	  this.domWeekschemaItem.addEventListener ('click', function ()  {
-	  	objWeekschemaItem.toggleItem ();
-	  });
-
-		/*
-		this.domVraagEnAntwoord.classList.add ('faq-element');
-
-		var arrVraagEnAntwoord = this.domVraagEnAntwoord.children;
-
-		this.domVraag = arrVraagEnAntwoord [0];
-		this.domVraag.classList.add ('faq-vraag');
-
-
-		this.domHR = document.createElement ('hr');
-		this.domVraag.parentNode.insertBefore (this.domHR, this.domVraag.nextSibling);
-
-		this.domAntwoord = arrVraagEnAntwoord [2];
-		this.domAntwoord.classList.add ('faq-antwoord');
-		*/
+	    this.domWeekschemaItem.addEventListener ('click', function ()  {
+	  	    objWeekschemaItem.toggleItem ();
+	    });
 	}
 }
 

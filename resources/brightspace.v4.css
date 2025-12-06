@@ -41,6 +41,10 @@ a {
     font-weight: bold;
 }
 
+a:not([href]) {
+    cursor: pointer;
+}
+
 .active-link {
     cursor: pointer;
 }
@@ -111,7 +115,7 @@ footer {
 }
 
 .extraMateriaal, .extraMateriaal li {
-    color: #9ea700 /* #ffba00 */;
+    color: purple /* #9ea700 */ /* #ffba00 */;
 }
 
 .contactImage {

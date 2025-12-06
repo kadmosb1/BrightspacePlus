@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html><head>
 
+  <style id="no-active-js">
+    /*
+     * Deze style is standaard actief totdat js ingrijpt. Als er dus geen js actief is
+     * (dat is bijvoorbeeld het geval tijdens het bewerken van de pagina's in BrightSpace),
+     * worden er standaard licht aangezette rode lijnen om de div's heen gezet.
+    */
+    div { border: 1px dotted red; min-height: 10px; }
+  </style>
+
   <script language="JavaScript">
     
     var strRootDir = document.URL.substr (0, document.URL.lastIndexOf ('/'));
@@ -47,7 +56,7 @@
 <div class="test-instellingen"></div>
 <h2 navigatie="yes" style="border-bottom: #494c4e 1px solid; padding-bottom: 16px;" type="instructie">Hoe voeg ik een inhoudsopgave toe aan een pagina?</h2>
 Op een willekeurige plaats in het document kun je een inhoudsopgave toevoegen:
-<pre class="blended-code">&lt;div id="inhoudsopgave" visible="true"&gt;&lt;!-- Toon hier een inhoudsopgave --&gt;&lt;/div&gt;</pre>
+<pre class="blended-code">&lt;div id="inhoudsopgave" visible="true" title="Inhoudsopgave"&gt;&lt;!-- Toon hier een inhoudsopgave --&gt;&lt;/div&gt;</pre>
 <p>Naast de id kun je twee andere attributen toevoegen:</p>
 <ul>
     <li><span style="font-family: Consolas;">visible="true"</span>: Als dit attribuut is toegevoegd met deze waarde, is
@@ -92,6 +101,15 @@ Op een willekeurige plaats in het document kun je een inhoudsopgave toevoegen:
 <p>Bovenaan elke pagina moet de volgende code worden toegevoegd (een paar elementen, zoals bijv. &lt;html&gt;, &lt;head&gt; en &lt;body&gt;, zijn bovenaan de pagina waarschijnlijk al toegevoegd):</p>
 <pre class="blended-code">&lt;!DOCTYPE html&gt;
 &lt;html&gt;&lt;head&gt;
+
+  &lt;style id="no-active-js"&gt;
+    /*
+     * Deze style is standaard actief totdat js ingrijpt. Als er dus geen js actief is
+     * (dat is bijvoorbeeld het geval tijdens het bewerken van de pagina's in BrightSpace),
+     * worden er standaard licht aangezette rode lijnen om de div's heen gezet.
+    */
+    div { border: 1px dotted red; min-height: 10px; }
+  &lt;/style&gt;
 
   &lt;script language="JavaScript"&gt;
  
@@ -193,7 +211,12 @@ Op een willekeurige plaats in het document kun je een inhoudsopgave toevoegen:
 <p>Stel dat je onderstaande link hebt toegevoegd aan je pagina:</p>
 <div class="blended-code">&lt;a href="https://lelij.com" start="2024/01/14"&gt;Pagina van Karel J. van der Lelij&lt;/a&gt;</div>
 <p>Dan wordt deze link als volgt getoond en wordt deze link in een nieuwe tab geopend:</p>
-<div class="blended-kader"><a href="https://lelij.com" start="2024/02/07 9:35" finish="2024/02/07 10:02">Pagina van Karel J. van der Lelij</a></div>
+<div class="blended-kader">
+    <a href="https://lelij.com" start="2024/02/07 9:35" finish="2024/02/07 10:02">Pagina van Karel J. van der Lelij</a><br>
+    <a href="https://lelij.com" start="2024/02/07 9:35">Pagina Karel J. van der Lelij</a><br>
+    <a href="Popup.html#anker">Link naar pagina in lokale site met anker</a><br>
+    <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/String.html#toLowerCase">Link naar een externe pagina met anker</a>
+</div>
 
 
 <h3 id="intern">Demo - Interne links</h3>
@@ -467,13 +490,12 @@ voor de link geplakt).</li>
 </pre>
 <p>Deze FAQ wordt getoond in een vaste opmaak. De gebruikte attributen hebben de volgende betekenis:</p>
 <ul>
-<li><span style="font-family: Consolas;">werkvorm</span>: Deze werkvorm wordt verwerkt in de toelichting op de FAQ.</li>
-<li><span style="font-family: Consolas;">header</span>: Het nummer voor de paragraaf (die default op 3 voor H3 staat).</li>
-<li><span style="font-family: Consolas;">title</span>: De titel die boven de FAQ wordt getoond (standaard is dat FAQ).</li>
+<li><span style="font-family: Consolas;">faq-intro</span>: De tekst die boven de FAQ wordt getoond. Dit is een <strong>verplicht</strong> attribuut.</li>
 </ul>
 <p>Als je bovenstaande code gebruikt voor een FAQ, wordt de wrapper met de FAQ getoond:</p>
 <div class="blended-kader">
-<div header="4" werkvorm="het hoorcollege" title="Een voorbeeld van een FAQ">
+<h4 type="FAQ" id="faq1">Jullie vragen en onze antwoorden</h4>
+<div faq-intro="We hebben de afgelopen jaren bij jullie medestudenten heel veel vragen geïnventariseerd en beantwoord. Deze hebben we hieronder verzameld in een FAQ">
     <div>
         <div>Vraag 1</div>
         <div>Antwoord 1</div>
@@ -483,7 +505,8 @@ voor de link geplakt).</li>
         <div>Antwoord 2</div>
     </div>
 </div>
-<div header="4" werkvorm="het hoorcollege" title="Een tweede voorbeeld van een FAQ">
+<h4 type="FAQ" id="faq2">Een tweede vragenlijst</h4>
+<div faq-intro="Je kunt ook een tweede FAQ op dezelfde pagina toevoegen.">
     <div>
         <div>Vraag 1</div>
         <div>Antwoord 1</div>
