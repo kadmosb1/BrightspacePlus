@@ -1453,7 +1453,7 @@ class Link {
 		return strHREF && strHREF.charAt (0) === '#';
 	}
 
-	static containsAnchorInternalToSite (link) {
+	static containsAnchorInternalToDomain (link) {
 		var strHREF = Link.getLink (link);
 		return (strHREF.indexOf ("http") !== 0) && strHREF.includes ("#");
 	}
@@ -1539,8 +1539,8 @@ class Link {
 			/*
 			 * Een externe link wordt geopend in een nieuw tabblad.
 			 */
-			else if (!Link.containsAnchorInternalToSite (this.strHREF)) {
-				
+			else if (!Link.containsAnchorInternalToDomain (this.strHREF)) {
+
 				if (this.domLink.tagName.toLowerCase () == 'a') {
 					this.domLink.setAttribute ('target', '_blank');
 				}
@@ -1561,8 +1561,30 @@ class Link {
 			objPagina.objPopup.activeerSectie (this.domSectie);
 		}
 
-		location.href = this.strHREF;
-		objPagina.activeerSectie (this.domSectie);
+		var strAnchorName = this.strHREF.split ("#") [1];
+		var domSection = document.getElementById (strAnchorName);
+
+		// Als er een element met de naam van het anker (in #<anker>) bestaat worden de volgende
+		// stappen doorlopen:
+    	// - Stap 1: Definieer het state-object (data die je wilt opslaan in history)
+		// - Stap 2: Voeg de state toe aan de history
+		// - Stap 3: Spring naar het anchor in het document.
+		if (domSection) {
+
+    		const stateData = {
+        		scrollX: window.scrollX,
+        		scrollY: window.scrollY
+    		};
+
+    		history.pushState (stateData, 'Huidige positie voor sprong naar anchor in document');
+
+			domSection.scrollIntoView ({
+            	behavior: 'smooth', // Optioneel:  vloeiend scrollen
+            	block: 'start'      // Essentieel: zet het element bovenaan de viewport
+        	});
+			
+			objPagina.activeerSectie (this.domSectie);
+		}
 	}
 
 	deactiveer () {
@@ -1596,11 +1618,10 @@ class Link {
 		}
 	}
 
-	addOnClickForExternalAnchor (url, anchor) {
+	addOnClickForAnchorWithinDomain (url, anchor) {
 
 		this.domLink.removeAttribute ('href');
 		this.domLink.removeAttribute ('target');
-		this.domLink.style.cursor = 'cursorurl';
 
 		this.domLink.addEventListener ('click', function () {
 			Cookie.set ('brightspace-anchor', anchor);
@@ -1616,7 +1637,7 @@ class Link {
 		this.arrQueryParameters = [];
 
 		if (this.strHREF && (this.strHREF.charAt (0) !== '#') && (this.strHREF.lastIndexOf ("http", 0) !== 0) && this.strHREF.includes ('#')) {
-			this.addOnClickForExternalAnchor (this.strHREF.split ('#') [0], this.strHREF.split ('#') [1]);
+			this.addOnClickForAnchorWithinDomain (this.strHREF.split ('#') [0], this.strHREF.split ('#') [1]);
 		}
 
 		// Als een querystring is meegegeven aan de URL, dan wordt die omgezet in een 
@@ -1632,7 +1653,7 @@ class Link {
 				if (qsp) {
 
 					if (qsp.key === 'kb-brightspace-anchor') {
-						this.addOnClickForExternalAnchor (this.strHREF.split ('?') [0], qsp.value);
+						this.addOnClickForAnchorWithinDomain (this.strHREF.split ('?') [0], qsp.value);
 					}
 
 					this.arrQueryParameters.push (qsp);
